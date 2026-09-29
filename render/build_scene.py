@@ -1,26 +1,41 @@
-"""Build a photo-real Blender scene of the duplex from house_geometry.json and render the front.
+"""Shared photo-real render pipeline for every design version.
 
-One-time:  python3 render/fetch_assets.py          (free CC0 textures, sky & plants from Poly Haven)
+One-time:  python3 render/fetch_assets.py          (free CC0 textures, sky, plants, furniture from Poly Haven)
+           node tools/export_geometry.mjs v1       (walkthrough geometry -> designs/v1/house_geometry.json)
 Render:    /Applications/Blender.app/Contents/MacOS/Blender -b -P render/build_scene.py -- \
-             --samples 256 --res 1920x1200 --out render/duplex_front.png [--cam front|corner]
+             --design v1 --cam front [--samples 256 --res 1920x1200 --exposure 0 --out path.png]
 
-Geometry comes from duplex-3d.html (feet, three.js axes: +x west, +y up, +z north).
-Blender axes here: +X west, +Y south (towards the road), +Z up, metres.
+Builds: the design's walkthrough geometry (designs/<id>/house_geometry.json) with photo-real materials,
+the shared site (roads, neighbours, trees, sky), then the design's own extras and cameras from
+designs/<id>/render.py. Output defaults to designs/<id>/renders/<cam>.png.
+
+Coordinates: walkthrough feet (+x west, +y up, +z north) -> Blender metres (+X west, +Y south, +Z up).
 """
-import bpy, bmesh, json, math, os, random, sys
+import bpy, bmesh, importlib.util, json, math, os, random, sys
 from mathutils import Vector
 
 argv = sys.argv[sys.argv.index('--') + 1:] if '--' in sys.argv else []
 def arg(name, default):
     return argv[argv.index(name) + 1] if name in argv else default
-SAMPLES = int(arg('--samples', '256'))
-RES = [int(v) for v in arg('--res', '1920x1200').split('x')]
-OUT = os.path.abspath(arg('--out', 'render/front.png'))
-CAM = arg('--cam', 'front')
 HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(HERE)
 ASSETS = os.path.join(HERE, 'assets')
 if not os.path.isdir(ASSETS):
     sys.exit('Missing render/assets — run: python3 render/fetch_assets.py')
+
+DESIGN = arg('--design', 'v1')
+DDIR = os.path.join(ROOT, 'designs', DESIGN)
+if not os.path.isfile(os.path.join(DDIR, 'render.py')):
+    sys.exit(f'No designs/{DESIGN}/render.py')
+_spec = importlib.util.spec_from_file_location(f'design_{DESIGN}', os.path.join(DDIR, 'render.py'))
+D = importlib.util.module_from_spec(_spec); _spec.loader.exec_module(D)
+
+CAM = arg('--cam', 'front')
+if CAM not in D.CAMERAS:
+    sys.exit(f'Unknown camera {CAM!r} for {DESIGN}; choose from {", ".join(D.CAMERAS)}')
+SAMPLES = int(arg('--samples', '256'))
+RES = [int(v) for v in arg('--res', '1920x1200').split('x')]
+OUT = os.path.abspath(arg('--out', os.path.join(DDIR, 'renders', f'{CAM}.png')))
 random.seed(7)
 
 FT = 0.3048
@@ -115,7 +130,8 @@ def cladding(name):
     # cladding only on the OUTSIDE: faces whose normal points towards the house centre get plaster
     geo2 = nt.nodes.new('ShaderNodeNewGeometry')
     to_c = nt.nodes.new('ShaderNodeVectorMath'); to_c.operation = 'SUBTRACT'
-    to_c.inputs[0].default_value = P(26, 10, 22.5)
+    hc = getattr(D, 'HOUSE_CENTER', (26, 22.5))
+    to_c.inputs[0].default_value = P(hc[0], 10, hc[1])
     nt.links.new(geo2.outputs['Position'], to_c.inputs[1])
     dot = nt.nodes.new('ShaderNodeVectorMath'); dot.operation = 'DOT_PRODUCT'
     nt.links.new(geo2.outputs['Normal'], dot.inputs[0]); nt.links.new(to_c.outputs['Vector'], dot.inputs[1])
@@ -193,6 +209,9 @@ MAT = {
     'brass': principled('Brass', (0.8, 0.6, 0.25), rough=0.25, metal=1.0),
 }
 CURTAIN = curtain_mat()
+MAT['teak'] = pbr('Teak', 'wood_floor', 1.2, tint=(0.36, 0.19, 0.09), normal=0.6, rough_mul=0.8)
+MAT['black_metal'] = principled('BlackMetal', (0.02, 0.02, 0.02), rough=0.4, metal=0.8)
+lamp_glow = principled('LampGlow', (1, 0.8, 0.55), **{'Emission Color': (1, 0.75, 0.45, 1), 'Emission Strength': 6.0})
 def floor_mat(hexcol):
     key = 'floor:' + hexcol
     if key not in MAT:
@@ -227,52 +246,25 @@ def plane_ft(x1, x2, z1, z2, y, mat, coll=site):
     return box_ft(x1, x2, y - 0.02, y, z1, z2, mat, coll, bevel=0)
 
 # ---------------------------------------------------------------- house from json
-data = json.load(open(os.path.join(HERE, 'house_geometry.json')))
-for i, d in enumerate(data):
+geom = os.path.join(DDIR, 'house_geometry.json')
+if not os.path.isfile(geom):
+    sys.exit(f'Missing {geom} — run: node tools/export_geometry.mjs {DESIGN}')
+for i, d in enumerate(json.load(open(geom))):
     k = d['k']
-    m = floor_mat(k[6:]) if k.startswith('floor:') else MAT.get(k, MAT['wall'])
     x, y, z = d['p']
+    if hasattr(D, 'skip') and D.skip(k, x, y, z):
+        continue
+    k = (D.material_for(k, x, y, z) if hasattr(D, 'material_for') else None) or k
+    m = floor_mat(k[6:]) if k.startswith('floor:') else MAT.get(k, MAT['wall'])
     if d['t'] == 'box':
         w, h, dd = d['s']
-        if k == 'shutter':          # rolled-up shutter box: we model the shutter closed below
-            continue
-        in_living = -0.5 <= x <= 18 and 25 <= z <= 45 and y < 6 and not (x < 6 and z > 43)
-        if in_living and k in ('fabric', 'fabric2', 'wood', 'dark'):
-            continue
         bev = 0 if k in ('glass', 'frame') else 0.006
-        if k == 'extWall' and abs(z) < 0.5 and y > 10.5:   # first-floor front wall -> terracotta
-            m = MAT['accent']
         cube(f'{k}_{i}', P(x, y, z), (w * FT, dd * FT, h * FT), m, bevel=bev)
     else:
         w, dd = d['s']
         cube(f'{k}_{i}', P(x, y, z), (w * FT, dd * FT, 0.004), m, bevel=0)
 
-# closed rolling shutter + guide rails + hood
-box_ft(28, 37, 0.5, 8.5, -0.55, -0.4, MAT['shutter'], col, bevel=0)
-box_ft(27.8, 28.1, 0.5, 8.6, -0.6, -0.35, MAT['frame'], col, bevel=0)
-box_ft(36.9, 37.2, 0.5, 8.6, -0.6, -0.35, MAT['frame'], col, bevel=0)
-box_ft(27.8, 37.2, 8.5, 9.3, -1.0, -0.35, MAT['frame'], col, bevel=0.004)
-# fully glaze the first-floor sliding doors (the walkthrough leaves half open)
-for a, b in [(19, 25), (28.5, 36.5), (40, 50)]:
-    mid = (a + b) / 2
-    box_ft(mid, b, 10.5, 18.5, -0.04, 0.04, glass, col, bevel=0)
-    for x in (a, mid, b):
-        box_ft(x - 0.12, x + 0.12, 10.5, 18.5, -0.1, 0.1, MAT['frame'], col, bevel=0)
-# roof canopy over the front balcony, with a deep fascia
-box_ft(16.5, 52.5, 20.5, 21.2, -4.5, 0, MAT['slab'], col)
-box_ft(16.5, 52.5, 20.0, 22.2, -4.9, -4.5, MAT['slab'], col)
-# sunshade chajjas over the ground-floor windows
-box_ft(18.5, 25.5, 7.7, 8.0, -1.8, 0, MAT['slab'], col)
-box_ft(39.5, 50.5, 7.7, 8.0, -1.8, 0, MAT['slab'], col)
-# coping on parapet
-box_ft(16.7, 52.3, 24.2, 24.4, -0.35, 0.35, MAT['parapet'], col)
-# house number plate + wall lights either side of the garage
-box_ft(37.6, 38.6, 6.8, 7.5, -0.45, -0.38, MAT['brass'], col, bevel=0)
-lamp_glow = principled('LampGlow', (1, 0.8, 0.55), **{'Emission Color': (1, 0.75, 0.45, 1), 'Emission Strength': 6.0})
-for x in (27.3, 37.7):
-    box_ft(x - 0.2, x + 0.2, 7.6, 8.3, -0.6, -0.38, lamp_glow, col, bevel=0)
-
-# sheer curtains just inside the glass (hide the simple interiors, add life)
+# sheer curtain helper: designs hang these just inside the glass (hides simple interiors, adds life)
 def curtain(x1, x2, y1, y2, z, folds=14):
     me = bpy.data.meshes.new('curtain'); bm = bmesh.new()
     nx, ny = 60, 2
@@ -291,14 +283,6 @@ def curtain(x1, x2, y1, y2, z, folds=14):
     bm.to_mesh(me); bm.free()
     ob = bpy.data.objects.new('curtain', me); me.materials.append(CURTAIN); col.objects.link(ob)
     for p in me.polygons: p.use_smooth = True
-# first-floor sliding doors: curtains drawn to the sides
-for a, b in [(19, 25), (28.5, 36.5), (40, 50)]:
-    w = b - a
-    curtain(a + 0.1, a + w * 0.32, 10.6, 18.3, 0.8)
-    curtain(b - w * 0.28, b - 0.1, 10.6, 18.3, 0.8)
-# ground-floor kitchen & master windows
-curtain(19.1, 21.5, 4.0, 7.4, 0.8, 8); curtain(40.1, 43.5, 4.0, 7.4, 0.8, 10); curtain(47, 49.9, 4.0, 7.4, 0.8, 9)
-
 # ---------------------------------------------------------------- site
 grass = pbr('Grass', 'aerial_grass_rock', 3.0, normal=0.8)
 asphalt = pbr('Asphalt', 'asphalt_02', 3.0, normal=0.8)
@@ -317,7 +301,6 @@ plane_ft(-22, -6, -30, 120, 0.035, asphalt)            # side road (east)
 box_ft(-6, 120, 0, 0.45, -9, -5, footpath)             # footpath along main road
 box_ft(-6, 120, 0, 0.5, -9.3, -9, kerb, bevel=0.01)
 box_ft(17, 52, 0, 0.47, -5, 0, paving, bevel=0)        # car apron, flush with footpath
-box_ft(-4, 0, 0, 0.25, 31, 35, paving)                 # door step
 for x in range(-20, 120, 10):
     plane_ft(x, x + 5, -19.7, -19.3, 0.05, paint)
 
@@ -350,7 +333,6 @@ neighbour(-60, -26, 5, 60, 31, neigh, front_windows=False)
 neighbour(17, 52, 47, 70, 11, neigh2, front_windows=False)
 neighbour(80, 110, 0, 40, 21, neigh, floors=2)
 neighbour(-60, -30, -80, -40, 21, neigh2, front_windows=False)
-tank(46, 36, 21.2 + 0.2)                                  # our own tank, set back on the roof
 
 # ---------------------------------------------------------------- scanned vegetation (Poly Haven)
 def load_model(name, objects):
@@ -385,22 +367,11 @@ grass_objs = load_model('grass_medium_01', [f'grass_medium_01_{s}_LOD1' for s in
 place(tree, P(7, 0.45, -7.2), 1.55, math.radians(30))
 place(tree, P(63, 0.45, -7.2), 1.4, math.radians(200))
 place(tree, P(-14, 0, 62), 1.7)
-# planters at the apron corners & shrubs in front of the neighbours
-planter_mat = pbr('Planter', 'concrete_floor', 1.0, tint=(0.35, 0.33, 0.31))
-for x in (18.2, 51.0):
-    box_ft(x - 1, x + 1, 0.47, 2.3, -2.2, -0.2, planter_mat)
-    place(random.choice(shrubs), P(x, 2.2, -1.2), 1.1)
+# shrubs in front of the neighbours
 for i, x in enumerate(range(1, 16, 3)):
     place(shrubs[i % 4], P(x + random.uniform(-.5, .5), 0.3, -3.4), random.uniform(0.9, 1.2))
 for x in range(56, 74, 3):
     place(shrubs[x % 4], P(x, 0.3, -2.2), random.uniform(0.8, 1.1))
-# potted plants on the balcony
-def pot(x, z, s=4.5):
-    for o in potted:
-        place(o, P(x, 10.5, z), s, 0.7)
-    place(random.choice(leafy), P(x, 10.5 + 0.16 * s / FT * 0.85, z), 4.2)
-for x in (18.3, 26.8, 38.2, 51.2):
-    pot(x, -3.2)
 # grass tufts scattered on the verges (in front of the neighbours and the side strip)
 def scatter_grass(x1, x2, z1, z2, n, y=0.0):
     for _ in range(n):
@@ -408,9 +379,7 @@ def scatter_grass(x1, x2, z1, z2, n, y=0.0):
                   random.uniform(1.2, 2.2))
 scatter_grass(0, 16.5, -4.9, -0.4, 420)
 scatter_grass(53, 76, -4.9, 1.8, 520)
-scatter_grass(-6, -0.5, 36, 45, 160)
 
-# ---------------------------------------------------------------- main entrance (east, side road)
 from mathutils import Matrix
 def place_group(objs, loc, scale=1.0, rot=0.0):
     """Place every part of a multi-object model with one transform (feet position, radians about Z)."""
@@ -421,75 +390,11 @@ def place_group(objs, loc, scale=1.0, rot=0.0):
         o.scale = (scale,) * 3; o.rotation_euler = (0, 0, rot)
         col.objects.link(o)
 
-teak = pbr('TeakDoor', 'wood_floor', 1.2, tint=(0.36, 0.19, 0.09), normal=0.6, rough_mul=0.8)
-black_metal = principled('BlackMetal', (0.02, 0.02, 0.02), rough=0.4, metal=0.8)
-# teak pivot door, swung ~55 degrees into the living room
-a = math.radians(55)
-hinge = Vector((0.0, 31.15))
-c = hinge + 1.85 * Vector((math.sin(a), math.cos(a)))
-door = cube('MainDoor', P(c.x, 0.5 + 3.75, c.y), (0.18 * FT, 3.7 * FT, 7.5 * FT), teak, bevel=0.004)
-door.rotation_euler[2] = a
-hx = hinge + 3.3 * Vector((math.sin(a), math.cos(a)))
-bar = cube('DoorPull', P(hx.x - 0.2 * math.cos(a), 4.2, hx.y + 0.2 * math.sin(a)), (0.08 * FT, 0.08 * FT, 3.0 * FT), MAT['brass'], bevel=0)
-# door frame
-box_ft(-0.4, 0.4, 0.5, 8.2, 30.8, 31.05, teak, col); box_ft(-0.4, 0.4, 0.5, 8.2, 34.95, 35.2, teak, col)
-box_ft(-0.4, 0.4, 7.95, 8.2, 30.8, 35.2, teak, col)
-# entrance canopy, steps, lights, name plate
-box_ft(-4.2, 0, 8.9, 9.4, 29.6, 36.4, MAT['slab'], col)
-box_ft(-3.2, 0, 0, 0.25, 30.3, 35.7, MAT['plinth'], col)
-box_ft(-1.6, 0, 0.25, 0.5, 30.3, 35.7, MAT['plinth'], col)
-for zz in (30.2, 35.8):
-    box_ft(-0.6, -0.38, 6.6, 7.4, zz - 0.2, zz + 0.2, lamp_glow, col, bevel=0)
-box_ft(-0.45, -0.38, 5.0, 5.6, 36.0, 37.4, MAT['brass'], col, bevel=0)
-# low compound wall along the side road, with an open pedestrian gate at the path
-cw = pbr('CompoundWall', 'painted_plaster_wall', 2.0, tint=(0.78, 0.75, 0.69), normal=0.4)
-box_ft(-4.8, -4.3, 0, 3.6, 22.0, 30.2, cw); box_ft(-4.8, -4.3, 0, 3.6, 35.8, 47.0, cw)
-box_ft(-4.95, -4.15, 3.6, 3.8, 22.0, 30.2, MAT['plinth']); box_ft(-4.95, -4.15, 3.6, 3.8, 35.8, 47.0, MAT['plinth'])
-for zz in (30.2, 35.8):
-    box_ft(-5.0, -4.1, 0, 4.4, zz - 0.45 if zz < 33 else zz, zz if zz < 33 else zz + 0.45, cw)
-for i in range(9):                       # open gate leaf, swung back against the wall
-    box_ft(-4.2 + 0.05, -4.2 + 0.12, 0.3, 3.9, 30.2 - 0.6 - i * 0.55, 30.2 - 0.55 - i * 0.55, black_metal, bevel=0)
-box_ft(-4.18, -4.0, 0.3, 0.45, 25.2, 30.0, black_metal, bevel=0); box_ft(-4.18, -4.0, 3.75, 3.9, 25.2, 30.0, black_metal, bevel=0)
-plane_ft(-4.3, 0, 30.3, 35.7, 0.09, paving)   # path from gate to door
-# plants flanking the entrance
-pb = load_model('planter_box_01', ['planter_box_01'])
-place_group(pb, P(-1.6, 0.06, 28.3), 1.0, math.radians(90))
-place_group(pb, P(-1.6, 0.06, 38.0), 1.0, math.radians(90))
-for zz in (27.0, 28.3, 29.4, 36.9, 38.0, 39.2):
-    place(random.choice(leafy), P(-1.6, 0.06 + 1.35, zz), random.uniform(3.2, 4.2))
-scatter_grass(-4.1, -0.5, 22.3, 29.8, 120)
-scatter_grass(-4.1, -0.5, 39.5, 44.8, 90)
 
-# ---------------------------------------------------------------- living room furniture (scanned)
-L0 = 0.5                                  # living floor level (ft)
-sofa = load_model('sofa_02', ['sofa_02_Base', 'sofa_02_Seat'])
-chair = load_model('modern_arm_chair_01', ['modern_arm_chair_01'])
-ctable = load_model('modern_coffee_table_01', ['modern_coffee_table_01'])
-stable = load_model('side_table_01', ['side_table_01'])
-bigplant = load_model('potted_plant_02', ['potted_plant_02_dirt', 'potted_plant_02_leaves', 'potted_plant_02_pot'])
-pillows = load_model('throw_pillows_01', ['throw_pillows_01_pillow01', 'throw_pillows_01_pillow02'])
-chand = load_model('Chandelier_03', ['Chandelier_03'])
-diya = load_model('brass_diya_lantern', ['brass_diya_lantern', 'brass_diya_lantern_chain', 'brass_diya_lantern_connection'])
-eleph = load_model('carved_wooden_elephant', ['carved_wooden_elephant'])
-frame = load_model('hanging_picture_frame_01', ['hanging_picture_frame_01'])
-SOFA_ROT = math.radians(float(arg('--sofa-rot', '0')))     # models face -Y (towards the road) by default
-place_group(sofa, P(9.5, L0, 27.2), 1.25, SOFA_ROT + math.pi)
-place_group(pillows, P(9.5, L0 + 1.6, 27.0), 1.0, SOFA_ROT + math.pi)
-place_group(chair, P(15.2, L0, 32.0), 1.0, SOFA_ROT - math.pi / 2)
-place_group(chair, P(15.2, L0, 36.0), 1.0, SOFA_ROT - math.pi / 2)
-place_group(ctable, P(9.5, L0, 33.0), 1.15, SOFA_ROT)
-place_group(stable, P(3.2, L0, 27.2), 1.0, 0)
-place_group(eleph, P(3.2, L0 + 1.85, 27.2), 2.0, math.radians(30))
-place_group(stable, P(15.8, L0, 27.2), 1.0, 0)
-place_group(bigplant, P(1.8, L0, 24.2), 2.2, 0)
-place_group(bigplant, P(15.8, L0, 43.5), 1.8, 1.0)
-place_group(frame, P(8.5, 6.0, 22.45), 1.6, math.pi)      # on the terracotta wall's inner face
-place_group(chand, P(9.0, 13.5, 33.5), 1.5, 0)             # pendant in the double height
-box_ft(8.95, 9.05, 14.9, 20.5, 33.45, 33.55, black_metal, col, bevel=0)   # drop rod to roof
-place_group(diya, P(3.0, 6.2, 42.6), 2.0, 0)                # brass diya lantern in the pooja
-rug = principled('Rug', (0.55, 0.45, 0.35), rough=1.0, **{'Sheen Weight': 0.6})
-plane_ft(4.5, 14.5, 29.5, 37.0, L0 + 0.06, rug, col)
-box_ft(8, 16, L0, L0 + 1.6, 43.8, 44.6, teak, col)          # low console under the north glass
+# ---------------------------------------------------------------- design extras (designs/<id>/render.py)
+D.__dict__.update({n: v for n, v in globals().items() if not n.startswith('__') and n != 'D'})
+if hasattr(D, 'build'):
+    D.build()
 
 # ---------------------------------------------------------------- lighting: real sky (HDRI) + sun
 world = bpy.data.worlds.new('Sky'); scene.world = world; world.use_nodes = True
@@ -515,40 +420,29 @@ mp.inputs['Rotation'].default_value[2] = hdr_az - want_az
 print(f'HDRI sun elevation {math.degrees(sun_el):.1f} deg, rotated {math.degrees(hdr_az - want_az):.1f} deg')
 bg.inputs['Strength'].default_value = 1.0
 
-# warm interior lights behind the front glass (lived-in look)
+# warm interior lights (designs call these from lights(cam))
 def room_light(x, y, z, power=45, size=1.5):
     l = bpy.data.lights.new('Room', 'AREA'); l.energy = power; l.size = size * FT * 3; l.color = (1.0, 0.78, 0.55)
     o = bpy.data.objects.new('Room', l); o.location = P(x, y, z)
     o.visible_camera = False; o.visible_transmission = False; o.visible_glossy = False
     scene.collection.objects.link(o)
-for (x, y, z) in [(22, 9.5, 6), (45, 9.5, 7), (22, 19.8, 7), (32.5, 19.8, 8), (45, 19.8, 7)]:
-    room_light(x, y, z)
-if CAM == 'living':
-    for (x, y, z) in [(8, 20.2, 28), (8, 20.2, 38), (22, 9.8, 34), (22, 9.8, 40)]:
-        room_light(x, y, z, power=140, size=2.5)
-    pl = bpy.data.lights.new('Pendant', 'POINT'); pl.energy = 60; pl.color = (1.0, 0.75, 0.5); pl.shadow_soft_size = 0.3
-    po = bpy.data.objects.new('Pendant', pl); po.location = P(9.0, 14.5, 33.5); scene.collection.objects.link(po)
-if CAM == 'entry':
-    for zz in (30.2, 35.8):
-        el = bpy.data.lights.new('EntryLamp', 'POINT'); el.energy = 25; el.color = (1.0, 0.75, 0.45); el.shadow_soft_size = 0.1
-        eo = bpy.data.objects.new('EntryLamp', el); eo.location = P(-0.9, 7.0, zz); scene.collection.objects.link(eo)
+def point_light(x, y, z, power, soft=0.2, color=(1.0, 0.75, 0.5)):
+    l = bpy.data.lights.new('Point', 'POINT'); l.energy = power; l.color = color; l.shadow_soft_size = soft
+    o = bpy.data.objects.new('Point', l); o.location = P(x, y, z); scene.collection.objects.link(o)
+D.__dict__.update({'room_light': room_light, 'point_light': point_light})
+if hasattr(D, 'lights'):
+    D.lights(CAM)
 
 # ---------------------------------------------------------------- camera
 cam = bpy.data.cameras.new('Cam'); co = bpy.data.objects.new('Cam', cam); scene.collection.objects.link(co)
 scene.camera = co
 cam.sensor_width = 36
-if CAM == 'corner':
-    eye, look, cam.lens, shift = P(68, 5.2, -42), P(34, 5.2, 12), 22, 0.18
-elif CAM == 'entry':          # from the side road, looking at the main door & double-height wing
-    eye, look, cam.lens, shift = P(-26, 5.3, 55), P(0, 5.3, 31), 20, 0.16
-elif CAM == 'living':         # inside, north-west corner of the living room looking back at the door
-    eye, look, cam.lens, shift = P(22.0, 4.6, 44.0), P(2, 4.6, 29.5), 16, 0.14
-else:
-    eye, look, cam.lens, shift = P(35, 5.2, -50), P(35, 5.2, 0), 24, 0.19
+cfg = D.CAMERAS[CAM]
+eye, look, cam.lens, shift = P(*cfg['eye']), P(*cfg['look']), cfg['lens'], cfg['shift']
 co.location = eye
 co.rotation_euler = (look - eye).to_track_quat('-Z', 'Y').to_euler()   # level camera -> straight verticals
 cam.shift_y = shift
-cam.dof.use_dof = True; cam.dof.focus_distance = (eye - P(35, 8, 0)).length; cam.dof.aperture_fstop = 8
+cam.dof.use_dof = True; cam.dof.focus_distance = (look - eye).length; cam.dof.aperture_fstop = 8
 
 # ---------------------------------------------------------------- render settings
 scene.render.engine = 'CYCLES'
@@ -577,8 +471,9 @@ for look in ('AgX - Medium High Contrast', 'Medium High Contrast'):
         scene.view_settings.look = look; break
     except Exception:
         pass
-scene.view_settings.exposure = float(arg('--exposure', '0'))
+scene.view_settings.exposure = float(arg('--exposure', cfg.get('exposure', 0)))
 
-bpy.ops.wm.save_as_mainfile(filepath=os.path.join(HERE, 'duplex_scene.blend'))
+os.makedirs(os.path.dirname(OUT), exist_ok=True)
+bpy.ops.wm.save_as_mainfile(filepath=os.path.join(DDIR, 'scene.blend'))   # open to tweak; not committed
 bpy.ops.render.render(write_still=True)
 print('RENDERED', OUT)

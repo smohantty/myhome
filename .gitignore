@@ -2,3 +2,5 @@
 .gstack/
 *.blend1
 render/assets/
+designs/*/scene.blend
+__pycache__/
