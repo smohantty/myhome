@@ -138,7 +138,7 @@ const EXT = 0.75, INT = 0.4;
 const DOOR_H = 7.5, WIN_S = 3.5, WIN_H = 7.5;
 
 const canvas = document.getElementById('view');
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true, logarithmicDepthBuffer: true });
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -151,7 +151,7 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xcfe0ec);
 scene.fog = new THREE.Fog(0xcfe0ec, 400, 1400);
 
-const camera = new THREE.PerspectiveCamera(60, 1, 0.1, 3000);
+const camera = new THREE.PerspectiveCamera(60, 1, 1, 3000);
 camera.rotation.order = 'YXZ';
 
 // ---------- lights ----------
@@ -273,7 +273,7 @@ function label(text, x, y, z, sub = '') {
   const tex = new THREE.CanvasTexture(c); tex.colorSpace = THREE.SRGBColorSpace;
   const sm = new THREE.SpriteMaterial({ map: tex, depthTest: false, transparent: true });
   sm.clippingPlanes = [clipPlane];
-  const s = new THREE.Sprite(sm); s.scale.set(10, 2.5, 1); s.position.set(x, y, z); s.renderOrder = 10;
+  const s = new THREE.Sprite(sm); s.scale.set(10, 2.5, 1); s.position.set(x, y, z); s.renderOrder = 10 + labels.children.length;   // fixed order: no swapping while orbiting
   labels.add(s);
   return s;
 }
@@ -345,15 +345,15 @@ wall('x', 0, 17, 52, F, RT, EXT, [slide(19, 25), slide(28.5, 36.5), slide(40, 50
 wall('z', 52, 0, 45, 0, RT, EXT, [], M.extWall);
 // Cut-out walls against the 2-storey neighbour
 wall('z', 17, 0, 22, 0, RT, EXT, [], M.extWall);
-wall('x', 22, 0, 17, 0, RT, EXT, [], M.accent);
+wall('x', 22, 0, 17 - EXT / 2, 0, RT, EXT, [], M.accent);   // stop at the plaster wall (no coplanar overlap)
 // East (side road) — double-height wing: tall glazing + main door
 wall('z', 0, 22, 45, 0, RT, EXT, [tall(23, 29, 1.5, 19.5), door(31, 35), tall(36, 38.5, 1.5, 19.5)], M.accent);
 // North — double-height wing part
-wall('x', 45, 0, 17, 0, RT, EXT, [tall(8, 16, 1.5, 19.5)], M.accent);
+wall('x', 45, 0, 17 - EXT / 2, 0, RT, EXT, [tall(8, 16, 1.5, 19.5)], M.accent);
 // North — main block, ground floor
-wall('x', 45, 17, 52, 0, F, EXT, [tall(18, 26, 1.5, 9.5), win(29, 36), win(41, 45)], M.extWall);
+wall('x', 45, 17 + EXT / 2, 52, 0, F, EXT, [tall(18, 26, 1.5, 9.5), win(29, 36), win(41, 45)], M.extWall);
 // North — main block, first floor (over void: tall window)
-wall('x', 45, 17, 52, F, RT, EXT, [tall(18, 26, F + 1, F + 9), win(29, 36, F), win(41, 45, F)], M.extWall);
+wall('x', 45, 17 + EXT / 2, 52, F, RT, EXT, [tall(18, 26, F + 1, F + 9), win(29, 36, F), win(41, 45, F)], M.extWall);
 
 // Parapet
 const P0 = RT, P1 = RT + 3;
@@ -507,16 +507,19 @@ table(34.6, 35.4, -2.6, -1.9, 1.8);
 const siteMat = (c) => new THREE.MeshStandardMaterial({ color: c, roughness: 1 });
 const ground = new THREE.Mesh(new THREE.PlaneGeometry(4000, 4000), siteMat(0xa9b58e));
 ground.rotation.x = -Math.PI / 2; ground.receiveShadow = true; scene.add(ground);
-function flat(x1, x2, z1, z2, y, c) {
-  const m = new THREE.Mesh(new THREE.PlaneGeometry(x2 - x1, z2 - z1), siteMat(c));
+// ground layers: lifted slightly AND pushed forward in depth so overlapping ones never fight
+function flat(x1, x2, z1, z2, y, c, layer = 1) {
+  const mt = siteMat(c);
+  Object.assign(mt, { polygonOffset: true, polygonOffsetFactor: -layer * 2, polygonOffsetUnits: -layer * 4 });
+  const m = new THREE.Mesh(new THREE.PlaneGeometry(x2 - x1, z2 - z1), mt);
   m.rotation.x = -Math.PI / 2; m.position.set((x1 + x2) / 2, y, (z1 + z2) / 2); m.receiveShadow = true; scene.add(m);
 }
-flat(-22, 90, -27, -5, 0.02, 0x6b665e);                 // main road (south)
-flat(-22, -4, -27, 90, 0.03, 0x6b665e);                 // side road (east)
-flat(17, 52, -5, 0, 0.04, 0xc9bfae);                    // car apron / front setback
-flat(-4, 0, 22, 45, 0.04, 0xc9bfae);                    // entry strip
+flat(-22, 90, -27, -5, 0.03, 0x6b665e, 1);                 // main road (south)
+flat(-22, -4, -27, 90, 0.03, 0x6b665e, 1);                 // side road (east)
+flat(17, 52, -5, 0, 0.06, 0xc9bfae, 2);                    // car apron / front setback
+flat(-4, 0, 22, 45, 0.06, 0xc9bfae, 2);                    // entry strip
 // road markings
-for (let x = -15; x < 90; x += 10) flat(x, x + 5, -16.2, -15.8, 0.05, 0xf2efe6);
+for (let x = -15; x < 90; x += 10) flat(x, x + 5, -16.2, -15.8, 0.09, 0xf2efe6, 3);
 // neighbour buildings (not ours) — solid, walkable around
 const nb = (x1, x2, z1, z2, h, c) => {
   const m = new THREE.Mesh(new THREE.BoxGeometry(x2 - x1, h, z2 - z1), siteMat(c));
@@ -570,7 +573,7 @@ function setMode(m) {
   document.getElementById('pad').style.display = m === 'walk' && coarse ? 'grid' : 'none';
   orbit.enabled = m === 'orbit';
   labels.visible = m === 'orbit';
-  if (m === 'walk') { setCut(999); camera.fov = 70; } else { camera.fov = 60; document.exitPointerLock?.(); orbit.target.set(26, 8, 22); camera.position.set(-38, 52, -50); }
+  if (m === 'walk') { setCut(999); camera.fov = 70; camera.near = 0.2; } else { camera.fov = 60; camera.near = 1; document.exitPointerLock?.(); orbit.target.set(26, 8, 22); camera.position.set(-38, 52, -50); }
   camera.updateProjectionMatrix();
 }
 const coarse = matchMedia('(pointer: coarse)').matches;
@@ -751,6 +754,7 @@ function resize() {
 }
 addEventListener('resize', resize); resize();
 setMode('orbit');
+setCut(999);
 const clock = new THREE.Clock();
 let t = 0;
 renderer.setAnimationLoop(() => {
