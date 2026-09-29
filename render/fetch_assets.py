@@ -19,8 +19,14 @@ TEXTURES = {  # id: resolution
     'concrete_floor': '2k',         # footpath, kerb
     'granite_wall': '1k',           # plinth
     'aerial_grass_rock': '2k',
+    'marble_tiles': '2k',           # living / entry floor
+    'wood_floor': '2k',             # teak main door, deck
 }
-MODELS = {'tree_small_02': '1k', 'shrub_02': '1k', 'shrub_04': '1k', 'potted_plant_04': '1k', 'grass_medium_01': '1k'}
+MODELS = {'tree_small_02': '1k', 'shrub_02': '1k', 'shrub_04': '1k', 'potted_plant_04': '1k', 'grass_medium_01': '1k',
+          # living room (interior render)
+          'sofa_02': '2k', 'modern_arm_chair_01': '2k', 'modern_coffee_table_01': '2k', 'side_table_01': '2k',
+          'potted_plant_02': '1k', 'throw_pillows_01': '1k', 'Chandelier_03': '1k', 'brass_diya_lantern': '1k',
+          'carved_wooden_elephant': '1k', 'hanging_picture_frame_01': '1k', 'planter_box_01': '1k'}
 MAPS = ('Diffuse', 'nor_gl', 'Rough')
 
 def get(url, dest):

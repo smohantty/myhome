@@ -112,6 +112,19 @@ def cladding(name):
     bump = nt.nodes.new('ShaderNodeBump'); bump.inputs['Strength'].default_value = 0.35; bump.invert = True
     nt.links.new(br.outputs['Fac'], bump.inputs['Height']); nt.links.new(nrm, bump.inputs['Normal'])
     nt.links.new(bump.outputs['Normal'], b.inputs['Normal'])
+    # cladding only on the OUTSIDE: faces whose normal points towards the house centre get plaster
+    geo2 = nt.nodes.new('ShaderNodeNewGeometry')
+    to_c = nt.nodes.new('ShaderNodeVectorMath'); to_c.operation = 'SUBTRACT'
+    to_c.inputs[0].default_value = P(26, 10, 22.5)
+    nt.links.new(geo2.outputs['Position'], to_c.inputs[1])
+    dot = nt.nodes.new('ShaderNodeVectorMath'); dot.operation = 'DOT_PRODUCT'
+    nt.links.new(geo2.outputs['Normal'], dot.inputs[0]); nt.links.new(to_c.outputs['Vector'], dot.inputs[1])
+    inside = nt.nodes.new('ShaderNodeMath'); inside.operation = 'GREATER_THAN'; inside.inputs[1].default_value = 0.0
+    nt.links.new(dot.outputs['Value'], inside.inputs[0])
+    sel = nt.nodes.new('ShaderNodeMix'); sel.data_type = 'RGBA'
+    nt.links.new(inside.outputs['Value'], sel.inputs[0])
+    nt.links.new(mul.outputs[2], sel.inputs[6]); sel.inputs[7].default_value = (0.86, 0.83, 0.78, 1)
+    nt.links.new(sel.outputs[2], b.inputs['Base Color'])
     return m
 
 def wood(name, c1, c2, scale=6.0):
@@ -160,7 +173,7 @@ MAT = {
     'extWall': pbr('Plaster', 'painted_plaster_wall', 2.0, tint=PLASTER_TINT, normal=0.35),
     'parapet': pbr('Parapet', 'painted_plaster_wall', 2.0, tint=(0.72, 0.69, 0.64), normal=0.35),
     'slab': pbr('Slab', 'painted_plaster_wall', 2.0, tint=(0.83, 0.81, 0.77), normal=0.25),
-    'wall': principled('InteriorWall', (0.80, 0.76, 0.70), rough=0.9),
+    'wall': pbr('InteriorWall', 'painted_plaster_wall', 2.0, tint=(0.86, 0.83, 0.78), normal=0.15),
     'accent': cladding('Terracotta'),
     'plinth': pbr('Stone', 'granite_wall', 1.0, tint=(0.16, 0.15, 0.14)),
     'glass': glass,
@@ -184,7 +197,12 @@ def floor_mat(hexcol):
     key = 'floor:' + hexcol
     if key not in MAT:
         c = tuple((int(hexcol[i:i + 2], 16) / 255) ** 2.2 for i in (0, 2, 4))
-        MAT[key] = principled('Floor_' + hexcol, c, rough=0.3)
+        if hexcol in ('e6dfd1', 'ece6da'):          # living / lobby -> polished marble tiles
+            MAT[key] = pbr('Marble_' + hexcol, 'marble_tiles', 1.8, rough_mul=0.35, normal=0.3)
+        elif hexcol == 'c49a6c':                    # bedrooms -> wood floor
+            MAT[key] = pbr('WoodFloor', 'wood_floor', 2.0, normal=0.5)
+        else:
+            MAT[key] = principled('Floor_' + hexcol, c, rough=0.3)
     return MAT[key]
 
 # ---------------------------------------------------------------- geometry helpers
@@ -217,6 +235,9 @@ for i, d in enumerate(data):
     if d['t'] == 'box':
         w, h, dd = d['s']
         if k == 'shutter':          # rolled-up shutter box: we model the shutter closed below
+            continue
+        in_living = -0.5 <= x <= 18 and 25 <= z <= 45 and y < 6 and not (x < 6 and z > 43)
+        if in_living and k in ('fabric', 'fabric2', 'wood', 'dark'):
             continue
         bev = 0 if k in ('glass', 'frame') else 0.006
         if k == 'extWall' and abs(z) < 0.5 and y > 10.5:   # first-floor front wall -> terracotta
@@ -296,7 +317,6 @@ plane_ft(-22, -6, -30, 120, 0.035, asphalt)            # side road (east)
 box_ft(-6, 120, 0, 0.45, -9, -5, footpath)             # footpath along main road
 box_ft(-6, 120, 0, 0.5, -9.3, -9, kerb, bevel=0.01)
 box_ft(17, 52, 0, 0.47, -5, 0, paving, bevel=0)        # car apron, flush with footpath
-plane_ft(-6, 0, 22, 45, 0.06, paving)                  # entry strip
 box_ft(-4, 0, 0, 0.25, 31, 35, paving)                 # door step
 for x in range(-20, 120, 10):
     plane_ft(x, x + 5, -19.7, -19.3, 0.05, paint)
@@ -338,7 +358,7 @@ def load_model(name, objects):
     with bpy.data.libraries.load(path, link=False) as (src, dst):
         dst.objects = [o for o in src.objects if o in objects]
     for o in dst.objects:
-        lib.objects.link(o); o.location = (0, 0, 0)
+        lib.objects.link(o); o['offset'] = list(o.location); o.location = (0, 0, 0)
     # appended images keep '//textures/..' relative to the source file: make them absolute
     for im in bpy.data.images:
         if im.filepath.startswith('//') and not os.path.exists(bpy.path.abspath(im.filepath)):
@@ -390,6 +410,87 @@ scatter_grass(0, 16.5, -4.9, -0.4, 420)
 scatter_grass(53, 76, -4.9, 1.8, 520)
 scatter_grass(-6, -0.5, 36, 45, 160)
 
+# ---------------------------------------------------------------- main entrance (east, side road)
+from mathutils import Matrix
+def place_group(objs, loc, scale=1.0, rot=0.0):
+    """Place every part of a multi-object model with one transform (feet position, radians about Z)."""
+    R = Matrix.Rotation(rot, 3, 'Z')
+    for src in objs:
+        o = bpy.data.objects.new(src.name + '_inst', src.data)
+        o.location = loc + R @ (Vector(src.get('offset', (0, 0, 0))) * scale)
+        o.scale = (scale,) * 3; o.rotation_euler = (0, 0, rot)
+        col.objects.link(o)
+
+teak = pbr('TeakDoor', 'wood_floor', 1.2, tint=(0.36, 0.19, 0.09), normal=0.6, rough_mul=0.8)
+black_metal = principled('BlackMetal', (0.02, 0.02, 0.02), rough=0.4, metal=0.8)
+# teak pivot door, swung ~55 degrees into the living room
+a = math.radians(55)
+hinge = Vector((0.0, 31.15))
+c = hinge + 1.85 * Vector((math.sin(a), math.cos(a)))
+door = cube('MainDoor', P(c.x, 0.5 + 3.75, c.y), (0.18 * FT, 3.7 * FT, 7.5 * FT), teak, bevel=0.004)
+door.rotation_euler[2] = a
+hx = hinge + 3.3 * Vector((math.sin(a), math.cos(a)))
+bar = cube('DoorPull', P(hx.x - 0.2 * math.cos(a), 4.2, hx.y + 0.2 * math.sin(a)), (0.08 * FT, 0.08 * FT, 3.0 * FT), MAT['brass'], bevel=0)
+# door frame
+box_ft(-0.4, 0.4, 0.5, 8.2, 30.8, 31.05, teak, col); box_ft(-0.4, 0.4, 0.5, 8.2, 34.95, 35.2, teak, col)
+box_ft(-0.4, 0.4, 7.95, 8.2, 30.8, 35.2, teak, col)
+# entrance canopy, steps, lights, name plate
+box_ft(-4.2, 0, 8.9, 9.4, 29.6, 36.4, MAT['slab'], col)
+box_ft(-3.2, 0, 0, 0.25, 30.3, 35.7, MAT['plinth'], col)
+box_ft(-1.6, 0, 0.25, 0.5, 30.3, 35.7, MAT['plinth'], col)
+for zz in (30.2, 35.8):
+    box_ft(-0.6, -0.38, 6.6, 7.4, zz - 0.2, zz + 0.2, lamp_glow, col, bevel=0)
+box_ft(-0.45, -0.38, 5.0, 5.6, 36.0, 37.4, MAT['brass'], col, bevel=0)
+# low compound wall along the side road, with an open pedestrian gate at the path
+cw = pbr('CompoundWall', 'painted_plaster_wall', 2.0, tint=(0.78, 0.75, 0.69), normal=0.4)
+box_ft(-4.8, -4.3, 0, 3.6, 22.0, 30.2, cw); box_ft(-4.8, -4.3, 0, 3.6, 35.8, 47.0, cw)
+box_ft(-4.95, -4.15, 3.6, 3.8, 22.0, 30.2, MAT['plinth']); box_ft(-4.95, -4.15, 3.6, 3.8, 35.8, 47.0, MAT['plinth'])
+for zz in (30.2, 35.8):
+    box_ft(-5.0, -4.1, 0, 4.4, zz - 0.45 if zz < 33 else zz, zz if zz < 33 else zz + 0.45, cw)
+for i in range(9):                       # open gate leaf, swung back against the wall
+    box_ft(-4.2 + 0.05, -4.2 + 0.12, 0.3, 3.9, 30.2 - 0.6 - i * 0.55, 30.2 - 0.55 - i * 0.55, black_metal, bevel=0)
+box_ft(-4.18, -4.0, 0.3, 0.45, 25.2, 30.0, black_metal, bevel=0); box_ft(-4.18, -4.0, 3.75, 3.9, 25.2, 30.0, black_metal, bevel=0)
+plane_ft(-4.3, 0, 30.3, 35.7, 0.09, paving)   # path from gate to door
+# plants flanking the entrance
+pb = load_model('planter_box_01', ['planter_box_01'])
+place_group(pb, P(-1.6, 0.06, 28.3), 1.0, math.radians(90))
+place_group(pb, P(-1.6, 0.06, 38.0), 1.0, math.radians(90))
+for zz in (27.0, 28.3, 29.4, 36.9, 38.0, 39.2):
+    place(random.choice(leafy), P(-1.6, 0.06 + 1.35, zz), random.uniform(3.2, 4.2))
+scatter_grass(-4.1, -0.5, 22.3, 29.8, 120)
+scatter_grass(-4.1, -0.5, 39.5, 44.8, 90)
+
+# ---------------------------------------------------------------- living room furniture (scanned)
+L0 = 0.5                                  # living floor level (ft)
+sofa = load_model('sofa_02', ['sofa_02_Base', 'sofa_02_Seat'])
+chair = load_model('modern_arm_chair_01', ['modern_arm_chair_01'])
+ctable = load_model('modern_coffee_table_01', ['modern_coffee_table_01'])
+stable = load_model('side_table_01', ['side_table_01'])
+bigplant = load_model('potted_plant_02', ['potted_plant_02_dirt', 'potted_plant_02_leaves', 'potted_plant_02_pot'])
+pillows = load_model('throw_pillows_01', ['throw_pillows_01_pillow01', 'throw_pillows_01_pillow02'])
+chand = load_model('Chandelier_03', ['Chandelier_03'])
+diya = load_model('brass_diya_lantern', ['brass_diya_lantern', 'brass_diya_lantern_chain', 'brass_diya_lantern_connection'])
+eleph = load_model('carved_wooden_elephant', ['carved_wooden_elephant'])
+frame = load_model('hanging_picture_frame_01', ['hanging_picture_frame_01'])
+SOFA_ROT = math.radians(float(arg('--sofa-rot', '0')))     # models face -Y (towards the road) by default
+place_group(sofa, P(9.5, L0, 27.2), 1.25, SOFA_ROT + math.pi)
+place_group(pillows, P(9.5, L0 + 1.6, 27.0), 1.0, SOFA_ROT + math.pi)
+place_group(chair, P(15.2, L0, 32.0), 1.0, SOFA_ROT - math.pi / 2)
+place_group(chair, P(15.2, L0, 36.0), 1.0, SOFA_ROT - math.pi / 2)
+place_group(ctable, P(9.5, L0, 33.0), 1.15, SOFA_ROT)
+place_group(stable, P(3.2, L0, 27.2), 1.0, 0)
+place_group(eleph, P(3.2, L0 + 1.85, 27.2), 2.0, math.radians(30))
+place_group(stable, P(15.8, L0, 27.2), 1.0, 0)
+place_group(bigplant, P(1.8, L0, 24.2), 2.2, 0)
+place_group(bigplant, P(15.8, L0, 43.5), 1.8, 1.0)
+place_group(frame, P(8.5, 6.0, 22.45), 1.6, math.pi)      # on the terracotta wall's inner face
+place_group(chand, P(9.0, 13.5, 33.5), 1.5, 0)             # pendant in the double height
+box_ft(8.95, 9.05, 14.9, 20.5, 33.45, 33.55, black_metal, col, bevel=0)   # drop rod to roof
+place_group(diya, P(3.0, 6.2, 42.6), 2.0, 0)                # brass diya lantern in the pooja
+rug = principled('Rug', (0.55, 0.45, 0.35), rough=1.0, **{'Sheen Weight': 0.6})
+plane_ft(4.5, 14.5, 29.5, 37.0, L0 + 0.06, rug, col)
+box_ft(8, 16, L0, L0 + 1.6, 43.8, 44.6, teak, col)          # low console under the north glass
+
 # ---------------------------------------------------------------- lighting: real sky (HDRI) + sun
 world = bpy.data.worlds.new('Sky'); scene.world = world; world.use_nodes = True
 wn = world.node_tree.nodes; wl = world.node_tree.links
@@ -422,6 +523,15 @@ def room_light(x, y, z, power=45, size=1.5):
     scene.collection.objects.link(o)
 for (x, y, z) in [(22, 9.5, 6), (45, 9.5, 7), (22, 19.8, 7), (32.5, 19.8, 8), (45, 19.8, 7)]:
     room_light(x, y, z)
+if CAM == 'living':
+    for (x, y, z) in [(8, 20.2, 28), (8, 20.2, 38), (22, 9.8, 34), (22, 9.8, 40)]:
+        room_light(x, y, z, power=140, size=2.5)
+    pl = bpy.data.lights.new('Pendant', 'POINT'); pl.energy = 60; pl.color = (1.0, 0.75, 0.5); pl.shadow_soft_size = 0.3
+    po = bpy.data.objects.new('Pendant', pl); po.location = P(9.0, 14.5, 33.5); scene.collection.objects.link(po)
+if CAM == 'entry':
+    for zz in (30.2, 35.8):
+        el = bpy.data.lights.new('EntryLamp', 'POINT'); el.energy = 25; el.color = (1.0, 0.75, 0.45); el.shadow_soft_size = 0.1
+        eo = bpy.data.objects.new('EntryLamp', el); eo.location = P(-0.9, 7.0, zz); scene.collection.objects.link(eo)
 
 # ---------------------------------------------------------------- camera
 cam = bpy.data.cameras.new('Cam'); co = bpy.data.objects.new('Cam', cam); scene.collection.objects.link(co)
@@ -429,6 +539,10 @@ scene.camera = co
 cam.sensor_width = 36
 if CAM == 'corner':
     eye, look, cam.lens, shift = P(68, 5.2, -42), P(34, 5.2, 12), 22, 0.18
+elif CAM == 'entry':          # from the side road, looking at the main door & double-height wing
+    eye, look, cam.lens, shift = P(-26, 5.3, 55), P(0, 5.3, 31), 20, 0.16
+elif CAM == 'living':         # inside, north-west corner of the living room looking back at the door
+    eye, look, cam.lens, shift = P(22.0, 4.6, 44.0), P(2, 4.6, 29.5), 16, 0.14
 else:
     eye, look, cam.lens, shift = P(35, 5.2, -50), P(35, 5.2, 0), 24, 0.19
 co.location = eye

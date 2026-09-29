@@ -14,6 +14,7 @@ Concept 3D model of the duplex, built from the hand-drawn plans in this folder.
 | `duplex-3d.html` | Interactive 3D model — open in Chrome. Overview with floor cut-aways, first-person walk-through (WASD + mouse, stairs work), room jump list, minimap, `.glb`/`.obj` export |
 | `render/duplex_front.png` | Photo-real render of the front (south, road side) |
 | `render/duplex_corner.png` | Photo-real 3/4 view from the south-west |
+| `render/duplex_entry.png` | Main entrance from the side road (east): teak door, canopy, double-height terracotta wing |
 | `render/duplex_scene.blend` | Blender scene for the render |
 | `render/build_scene.py` | Rebuilds the Blender scene from `house_geometry.json` and renders |
 | `render/house_geometry.json` | Geometry exported from `duplex-3d.html`, so the render matches the walk-through |
@@ -24,7 +25,7 @@ Concept 3D model of the duplex, built from the hand-drawn plans in this folder.
 ```sh
 python3 render/fetch_assets.py        # once: sky HDRI, scanned textures, trees/shrubs/grass
 /Applications/Blender.app/Contents/MacOS/Blender -b -P render/build_scene.py -- \
-  --samples 128 --res 1920x1200 --out render/duplex_front.png   # --cam corner for the 3/4 view, --exposure to brighten/darken
+  --samples 128 --res 1920x1200 --out render/duplex_front.png   # --cam corner|entry|living, --exposure to brighten/darken (living uses 0.5)
 ```
 
 ## Assumptions (v1)
