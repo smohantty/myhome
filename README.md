@@ -7,6 +7,13 @@ is a tab in the viewer: walk through it in 3D, or flip to its photo-real renders
 
 ![Front of the house (v1)](designs/v1/renders/front.png)
 
+## Versions
+
+| Tab | Idea |
+|---|---|
+| **V1 · Original sketch** (`#v1`) | As drawn: main door on the east side road into the double-height NE living, garage on the front, 4 bedrooms (2 down, 2 up + theatre/study) |
+| **V2 · Front entrance** (`#v2`) | Main door on the front facing the road and mountains via a foyer; garage moved to the east side road with a terrace above; theatre/study removed so the first floor has 2 bedrooms and one large lounge |
+
 ## Layout
 
 | Path | What it is |

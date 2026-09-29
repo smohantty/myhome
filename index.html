@@ -391,7 +391,7 @@ function label(text, x, y, z, sub = '') {
   }
   const L = (t, x, y, z, s) => { const sp = label(t, x, y, z, s); sp.material.clippingPlanes = []; sp.userData.site = true; };
   L('MAIN ROAD · SOUTH', 30, 3, -16, 'front · mountains beyond');
-  L('SIDE ROAD · EAST', -13, 3, 50, 'main door this side');
+  L('SIDE ROAD · EAST', -13, 3, 50, '');
 })();
 
 // ================= DESIGN LOADING =================
@@ -460,7 +460,7 @@ function setCut(which) {
   const v = cutHeights()[which];
   clipPlane.constant = v;
   document.querySelectorAll('[data-cut]').forEach(b => b.classList.toggle('on', b.dataset.cut === which));
-  for (const s of labels.children) if (!s.userData.site) s.visible = v < 100 && s.position.y < v;
+  for (const s of labels.children) if (!s.userData.site) s.visible = v < 100 && s.position.y < v && s.position.y > v - (F - G) - 1;   // only the cut floor's labels
   return v;
 }
 document.querySelectorAll('[data-cut]').forEach(b => b.onclick = () => {
