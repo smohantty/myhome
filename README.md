@@ -2,6 +2,10 @@
 
 Concept 3D model of the duplex, built from the hand-drawn plans in this folder.
 
+**▶ Walk through it in your browser: https://smohantty.github.io/myhome/**
+
+![Front of the house](render/duplex_front.png)
+
 ## What's here
 
 | File | What it is |
@@ -9,15 +13,18 @@ Concept 3D model of the duplex, built from the hand-drawn plans in this folder.
 | `Site plan & directions@1x.png`, `Ground floor@1x.png`, `First floor@1x (1).png` | Source plans |
 | `duplex-3d.html` | Interactive 3D model — open in Chrome. Overview with floor cut-aways, first-person walk-through (WASD + mouse, stairs work), room jump list, minimap, `.glb`/`.obj` export |
 | `render/duplex_front.png` | Photo-real render of the front (south, road side) |
+| `render/duplex_corner.png` | Photo-real 3/4 view from the south-west |
 | `render/duplex_scene.blend` | Blender scene for the render |
 | `render/build_scene.py` | Rebuilds the Blender scene from `house_geometry.json` and renders |
 | `render/house_geometry.json` | Geometry exported from `duplex-3d.html`, so the render matches the walk-through |
+| `render/fetch_assets.py` | Downloads the free CC0 [Poly Haven](https://polyhaven.com) sky, textures and plants (~180 MB, not committed) |
 
 ## Re-render the front
 
 ```sh
+python3 render/fetch_assets.py        # once: sky HDRI, scanned textures, trees/shrubs/grass
 /Applications/Blender.app/Contents/MacOS/Blender -b -P render/build_scene.py -- \
-  --samples 128 --res 1920x1200 --out render/duplex_front.png   # add --cam corner for a 3/4 view
+  --samples 128 --res 1920x1200 --out render/duplex_front.png   # --cam corner for the 3/4 view, --exposure to brighten/darken
 ```
 
 ## Assumptions (v1)
