@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>House plan v2</title>
+<title>House plan V4</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -39,9 +39,9 @@
 <div class="sheet">
   <header>
     <div>
-      <div class="eyebrow">DUPLEX · 4 BHK · VASTU · ON SITE PLAN V2</div>
-      <h1>House plan v2</h1>
-      <p class="sub">Modern G+1 inside the L-shaped construction area: garage and portico at the front, kitchen and store in the east wing.</p>
+      <div class="eyebrow">DUPLEX · 4 BHK · VASTU · ON SITE PLAN V2 · VIEWER TAB V4</div>
+      <h1>House plan V4</h1>
+      <p class="sub">Modern G+1 inside the L-shaped construction area: garage and a 4′ recessed portico at the front, kitchen and store in the east wing.</p>
     </div>
     <div class="totals">Ground floor <b>1,251 sq ft</b> · First floor <b>≈ 870 sq ft</b> incl. pooja and balcony + 380 sq ft open terrace<br>
       4 bedrooms (1 down, 3 up) · 3 attached + 1 common bath · garage · portico · pooja</div>
@@ -113,7 +113,7 @@ const X = f => OX + (f - 4) * S + 40, Y = f => OY + f * S;
 const NS = 'http://www.w3.org/2000/svg';
 const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 
-function plan(id, rooms, extra) {
+function plan(id, rooms, extra, openFront = [28.5, 32.5]) {
   const svg = document.getElementById(id);
   const el = (tag, a, t) => { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); if (t != null) e.textContent = t; svg.appendChild(e); return e; };
   const R = (x0, y0, x1, y1, a) => el('rect', { x: X(x0), y: Y(y0), width: (x1 - x0) * S, height: (y1 - y0) * S, ...a });
@@ -142,8 +142,11 @@ function plan(id, rooms, extra) {
   // outer wall of the construction area
   el('polygon', { points: [[18, 15], [51, 15], [51, 44], [4, 44], [4, 23], [18, 23]].map(([x, y]) => `${X(x)},${Y(y)}`).join(' '),
     fill: 'none', stroke: css('--ink'), 'stroke-width': 3.5 });
-  el('line', { x1: X(28.5) + 2, y1: Y(15), x2: X(32.5) - 2, y2: Y(15), stroke: '#fbf8f2', 'stroke-width': 5 });   // open front of the recess
-  el('line', { x1: X(28.5), y1: Y(15), x2: X(32.5), y2: Y(15), stroke: css('--ink'), 'stroke-width': 1, 'stroke-dasharray': '3 3' });
+  if (openFront) {                                    // open stretch of the front wall (recessed portico / carport)
+    const [a, b] = openFront;
+    el('line', { x1: X(a) + 2, y1: Y(15), x2: X(b) - 2, y2: Y(15), stroke: '#fbf8f2', 'stroke-width': 5 });
+    el('line', { x1: X(a), y1: Y(15), x2: X(b), y2: Y(15), stroke: css('--ink'), 'stroke-width': 1, 'stroke-dasharray': '3 3' });
+  }
   // compass
   const cx = X(1.5), cy = Y(39.5);
   T(cx, cy - 14, 'S', { 'font-weight': 600, 'font-size': 10 });
@@ -176,16 +179,16 @@ function windowMark(api, o, a, b, w) {
     el('line', { x1: X(a), y1: Y(b), x2: X(a), y2: Y(b + w), stroke: '#5b8aa0', 'stroke-width': 1.6 }); }
 }
 // dog-leg stair in [32.5,15,39,26]: landing at the south end, flights run north–south; up = clockwise
-function stair(api, label) {
+function stair(api, label, dz = 0) {
   const { el, T } = api;
-  const x0 = 32.5, x1 = 39, y0 = 18.5, y1 = 26;
+  const x0 = 32.5, x1 = 39, y0 = 18.5 + dz, y1 = 26 + dz;
   for (let y = y0; y <= y1 + 0.01; y += 0.75) el('line', { x1: X(x0), y1: Y(y), x2: X(x1), y2: Y(y), stroke: css('--ink'), 'stroke-width': .6, 'stroke-opacity': .6 });
   el('line', { x1: X(35.75), y1: Y(y0), x2: X(35.75), y2: Y(y1), stroke: css('--ink'), 'stroke-width': 1.2 });
   el('line', { x1: X(x0), y1: Y(y0), x2: X(x1), y2: Y(y0), stroke: css('--ink'), 'stroke-width': .9 });
   // arrow: from the lobby south up the east flight, turn at the landing, north up the west flight (clockwise)
-  el('path', { d: `M${X(34.1)},${Y(25.5)} L${X(34.1)},${Y(17)} L${X(37.4)},${Y(17)} L${X(37.4)},${Y(24.5)}`, fill: 'none', stroke: css('--accent'), 'stroke-width': 1.3 });
-  el('polygon', { points: `${X(37.4)},${Y(25.3)} ${X(37.4) - 4},${Y(24.3)} ${X(37.4) + 4},${Y(24.3)}`, fill: css('--accent') });
-  T(X(35.75), Y(16.6) + 3, label, { 'font-size': 9.5, 'font-weight': 600, fill: css('--muted') });
+  el('path', { d: `M${X(34.1)},${Y(25.5 + dz)} L${X(34.1)},${Y(17 + dz)} L${X(37.4)},${Y(17 + dz)} L${X(37.4)},${Y(24.5 + dz)}`, fill: 'none', stroke: css('--accent'), 'stroke-width': 1.3 });
+  el('polygon', { points: `${X(37.4)},${Y(25.3 + dz)} ${X(37.4) - 4},${Y(24.3 + dz)} ${X(37.4) + 4},${Y(24.3 + dz)}`, fill: css('--accent') });
+  T(X(35.75), Y(16.6 + dz) + 3, label, { 'font-size': 9.5, 'font-weight': 600, fill: css('--muted') });
 }
 
 // ---------- GROUND FLOOR ----------

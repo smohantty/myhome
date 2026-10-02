@@ -1,5 +1,5 @@
 /* V6 — V4 without a portico: open garage (carport) with the main door right beside it.
-   Same 4BHK on the Vastu setback site plan (plans/site-plan-v2.png, plans/house-plan-v2.png).
+   Same 4BHK on the Vastu setback site plan (plans/site-plan-v2.png, plans/house-plan-v6.png).
    Construction is the L inside the plot: main block 33'×29' (x 18–51, z 15–44) + east wing 14'×21'
    (x 4–18, z 23–44), 1' gaps on the sides and back, 4' at the wing's side-road end, 15' open at the front.
    S4 pada main door flush on the front wall, next to an open carport (no shutter) that also has a side door
@@ -103,7 +103,7 @@ registerDesign({
     // ================= ground floor interior
     const g0 = G, g1 = F - 0.5;
     wall('z', 18, 23, 44, g0, g1, INT, [{ a: 33, b: 36, s: g0, h: G + 7.5, kind: 'open' }, door(37, 39.8)]);   // garage | kitchen, dining | kitchen + utility
-    wall('z', 28.5, 15, 33, g0, g1, INT, [door(21.5, 24.5)]);            // garage | foyer, lobby
+    wall('z', 28.5, 15, 38, g0, g1, INT, [door(21.5, 24.5)]);            // garage | foyer, lobby; TV wall partition to the dining
     wall('x', 33, 18, 28.5, g0, g1, INT);                                // garage | dining
     wall('z', 32.5, 15, 26, g0, g1, INT);                                // foyer | stair
     wall('z', 39, 15, 27.5, g0, g1, INT);                                // stair | bedroom 1
@@ -158,11 +158,14 @@ registerDesign({
     // dining
     f.table(20, 26.5, 36.5, 40.5);
     for (const [x, z] of [[20.4, 35.2], [22.6, 35.2], [24.8, 35.2], [20.4, 40.8], [22.6, 40.8], [24.8, 40.8]]) box(x, x + 1.4, G, G + 1.5, z, z + 1.2, M.fabric2);
-    // living: L-sofa facing the TV wall on the east (garage) side
-    f.sofa(36, 44.8, 40.5, 43.4, 'N');
-    f.sofa(42, 44.8, 31, 40.5, 'W', M.fabric2);
-    f.table(36.5, 41, 34.5, 38.5, 1.4);
-    box(29, 29.6, G, G + 1.8, 34, 42, M.wood);                           // TV unit
+    // living, Korean geo-sil style: one wall for the TV, the opposite wall for the sofa (~13' apart).
+    // TV wall on the east (garage wall + a short partition) in the SE of the living; sofa on the west wall, facing east
+    box(28.75, 28.95, G, F - 0.5, 28.0, 36.5, M.teak, nc);                          // teak-slat feature wall
+    box(28.95, 30.3, G, G + 1.4, 28.5, 36, M.wood);                                 // low TV console
+    box(28.95, 29.15, G + 3, G + 6.2, 29.5, 35, M.dark, nc);                       // TV
+    f.sofa(42.5, 45.2, 28.25, 36.25, 'W');                                      // 3-seater on the west wall
+    f.table(37.5, 40.5, 30.05, 34.45, 1.4);                                 // coffee table
+    box(39.5, 41.5, G, G + 2.6, 37.25, 39.25, M.fabric2);                       // armchair
 
     // ================= furniture, first floor
     f = h.furnish(F);
