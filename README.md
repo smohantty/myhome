@@ -13,7 +13,7 @@ is a tab in the viewer: walk through it in 3D, or flip to its photo-real renders
 |---|---|
 | **V1 · Original sketch** (`#v1`) | As drawn: main door on the east side road into the double-height NE living, garage on the front, 4 bedrooms (2 down, 2 up + theatre/study) |
 | **V2 · Front entrance** (`#v2`) | Main door on the front facing the road and mountains via a foyer; garage moved to the east side road with a terrace above; theatre/study removed so the first floor has 2 bedrooms and one large lounge |
-| **V3 · Sketch layout** (`#v3`) | From [`plans/v3-ground-floor-sketch.jpg`](plans/v3-ground-floor-sketch.jpg): mountain-facing front entrance between the garage and front bedroom; kitchen + store on a fully closed side-road wall (skylit, terrace above); double-height living; 2 bedrooms down + 2 up |
+| **V3 · Vastu showpiece** (`#v3`) | From [`plans/v3-ground-floor-sketch.jpg`](plans/v3-ground-floor-sketch.jpg), re-planned by Vastu: S4-pada main door in a recessed stone porch under a cantilevered teak view-box lounge facing the mountains; masters SW (jaali-screened), kitchen east with the cook facing east, NE open courtyard with tulsi + water, pooja NE, clockwise west stair, open centre; side-road wall fully closed |
 
 ## Layout
 

@@ -211,6 +211,9 @@ MAT = {
 CURTAIN = curtain_mat()
 MAT['teak'] = pbr('Teak', 'wood_floor', 1.2, tint=(0.36, 0.19, 0.09), normal=0.6, rough_mul=0.8)
 MAT['black_metal'] = principled('BlackMetal', (0.02, 0.02, 0.02), rough=0.4, metal=0.8)
+MAT['stone'] = pbr('StoneCladding', 'granite_wall', 1.4, tint=(0.30, 0.28, 0.26), normal=1.2)
+MAT['terracotta'] = pbr('TerracottaJaali', 'clay_plaster', 0.8, tint=(0.52, 0.21, 0.10), normal=0.5)
+MAT['water'] = principled('Water', (0.10, 0.25, 0.30), rough=0.02, **{'Transmission Weight': 0.6, 'IOR': 1.33})
 lamp_glow = principled('LampGlow', (1, 0.8, 0.55), **{'Emission Color': (1, 0.75, 0.45, 1), 'Emission Strength': 6.0})
 def floor_mat(hexcol):
     key = 'floor:' + hexcol

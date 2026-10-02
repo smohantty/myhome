@@ -236,6 +236,10 @@ const M = {
   counter: mat(0x3f3d3a), cabinet: mat(0xd8cbb5), white: mat(0xfbfbf8), dark: mat(0x252525),
   car: mat(0x6f8fa6, { metalness: 0.5, roughness: 0.35 }), brass: mat(0xc9a14a, { metalness: 0.6, roughness: 0.35 }),
   shutter: mat(0x8a8d90, { metalness: 0.4 }),
+  // facade materials (v3+)
+  teak: mat(0x8b5a33), stone: mat(0x57534d), terracotta: mat(0xb4623c),
+  water: (() => { const m = new THREE.MeshPhysicalMaterial({ color: 0x3f7fa0, transparent: true, opacity: 0.75, roughness: 0.05,
+    side: THREE.DoubleSide }); m.clippingPlanes = [clipPlane]; return m; })(),
 };
 const MAT_KEY = new Map(Object.entries(M).map(([k, v]) => [v, k]));
 const floorColors = {
