@@ -28,7 +28,7 @@ is a tab in the viewer: walk through it in 3D, or flip to its photo-real renders
 | `render/build_scene.py` | Shared Blender pipeline: materials, site, trees, sky, render settings |
 | `render/fetch_assets.py` | Downloads the free CC0 [Poly Haven](https://polyhaven.com) sky, textures, plants and furniture (~300 MB, not committed) |
 | `tools/export_geometry.mjs` | Exports `design.js` geometry for Blender (needs `npm i -g puppeteer` + Chrome) |
-| `plans/` | Original site plan and floor plan sketches; `site-plan-v2.html` / `.png` is the Vastu setback site plan (construction area + every gap) |
+| `plans/` | Original site plan and floor plan sketches; `site-plan-v2.html` / `.png` is the Vastu setback site plan (construction area + every gap); `house-plan-v2.html` / `.png` is the 4BHK floor plan on it |
 
 The viewer also works opened straight from disk (double-click `index.html`).
 

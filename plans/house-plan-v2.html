@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>House plan v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f1ea; --ink: #2b2925; --muted: #6b665e; --rule: #ddd6ca; --accent: #b4623c;
+    --bed: #ead9bf; --wet: #d5e2e4; --living: #f1e6d1; --kitchen: #f0d6c2; --garage: #dcd7cf;
+    --circ: #f6efe3; --stair: #e4ddd1; --outdoor: #dfe6d3; --pooja: #f3d9a4;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.5 'IBM Plex Sans', system-ui, sans-serif; }
+  .sheet { width: 1600px; padding: 30px 40px 36px; }
+  header { display: flex; justify-content: space-between; align-items: end; margin-bottom: 8px; }
+  .eyebrow { color: var(--accent); letter-spacing: .14em; font-size: 12px; font-weight: 600; }
+  h1 { font-family: 'Fraunces', serif; font-size: 40px; margin: 2px 0 0; line-height: 1.1; }
+  .sub { color: var(--muted); margin: 4px 0 0; }
+  .totals { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
+  .totals b { color: var(--ink); }
+  .plans { display: flex; gap: 20px; }
+  .plans figure { margin: 0; flex: 1; }
+  figcaption { font-size: 12px; letter-spacing: .14em; font-weight: 600; color: var(--muted); margin: 6px 0 0 6px; }
+  svg text { font-family: 'IBM Plex Sans', sans-serif; }
+  .notes { display: grid; grid-template-columns: 1.15fr 1fr 1fr; gap: 32px; margin-top: 14px; }
+  h2 { font-size: 12px; letter-spacing: .14em; color: var(--muted); margin: 0 0 6px; font-weight: 600; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 13px; }
+  td { padding: 3.5px 0; border-bottom: 1px solid var(--rule); }
+  td:last-child { text-align: right; white-space: nowrap; padding-left: 10px; color: var(--muted); }
+  ul { margin: 0; padding-left: 18px; font-size: 13px; }
+  li { margin: 0 0 5px; }
+  .legend { display: flex; gap: 18px; font-size: 12px; margin: 4px 0 0 6px; flex-wrap: wrap; }
+  .sw { display: inline-block; width: 12px; height: 10px; border: 1px solid #0003; margin-right: 5px; vertical-align: -1px; }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <header>
+    <div>
+      <div class="eyebrow">DUPLEX · 4 BHK · VASTU · ON SITE PLAN V2</div>
+      <h1>House plan v2</h1>
+      <p class="sub">Modern G+1 inside the L-shaped construction area: garage and portico at the front, kitchen and store in the east wing.</p>
+    </div>
+    <div class="totals">Ground floor <b>1,251 sq ft</b> · First floor <b>≈ 870 sq ft</b> incl. pooja + 380 sq ft open terrace<br>
+      4 bedrooms (1 down, 3 up) · 3 attached + 1 common bath · garage · portico · pooja</div>
+  </header>
+
+  <div class="plans">
+    <figure><svg id="gf" width="760" height="560" viewBox="0 0 760 560"></svg><figcaption>GROUND FLOOR · 1 BEDROOM</figcaption></figure>
+    <figure><svg id="ff" width="760" height="560" viewBox="0 0 760 560"></svg><figcaption>FIRST FLOOR · 3 BEDROOMS + LOUNGE</figcaption></figure>
+  </div>
+  <div class="legend">
+    <span><i class="sw" style="background:var(--bed)"></i>Bedroom</span>
+    <span><i class="sw" style="background:var(--living)"></i>Living / lounge</span>
+    <span><i class="sw" style="background:var(--kitchen)"></i>Kitchen / store</span>
+    <span><i class="sw" style="background:var(--wet)"></i>Bath / utility</span>
+    <span><i class="sw" style="background:var(--garage)"></i>Garage</span>
+    <span><i class="sw" style="background:var(--outdoor)"></i>Portico / terrace / balcony</span>
+    <span><i class="sw" style="background:var(--pooja)"></i>Pooja</span>
+    <span style="color:var(--muted)">North points down (road on top), as on the site plan · all sizes are clear inside sizes in feet, walls not deducted</span>
+  </div>
+
+  <div class="notes">
+    <div>
+      <h2>ROOM SCHEDULE</h2>
+      <table>
+        <tr><td>Portico + entry steps (S4 pada main door)</td><td>9½′ × 7′</td></tr>
+        <tr><td>Garage, 1 car (SUV fits)</td><td>10½′ × 18′</td></tr>
+        <tr><td>Foyer with shoe + coat wall</td><td>4′ × 11′</td></tr>
+        <tr><td>Living (open to dining)</td><td>17′ × 16½′</td></tr>
+        <tr><td>Dining (open to living)</td><td>10½′ × 11′</td></tr>
+        <tr><td>Kitchen (east wing), cook faces east</td><td>14′ × 13′</td></tr>
+        <tr><td>Store + utility/wash (east wing)</td><td>7′ × 8′ each</td></tr>
+        <tr><td>Bedroom 1 · SW ground floor (parents) + attached bath 5½′ × 8′</td><td>12′ × 12½′</td></tr>
+        <tr><td>Common bath off the living (guests)</td><td>5½′ × 8½′</td></tr>
+        <tr><td>Master · SW first floor + dress + bath</td><td>12′ × 11′</td></tr>
+        <tr><td>Bedroom 3 · over the garage + bath 5′ × 7′</td><td>10½′ × 11′</td></tr>
+        <tr><td>Bedroom 4 · NW first floor + bath 6′ × 6′</td><td>12′ × 11′</td></tr>
+        <tr><td>Family lounge + study nook</td><td>19½′ × 7′ + 10½′ × 5′</td></tr>
+        <tr><td>Pooja · NE corner of the terrace, over the store</td><td>5′ × 6′</td></tr>
+        <tr><td>Front balcony on the portico roof (mountain view)</td><td>9½′ × 7′</td></tr>
+      </table>
+    </div>
+    <div>
+      <h2>WHY IT IS LAID OUT THIS WAY</h2>
+      <ul>
+        <li><b>Main door in the 4th pada of the south wall</b>, the one auspicious south entry, between the garage and the stair, under a portico with a balcony above.</li>
+        <li><b>Master bedrooms in the south-west</b> on both floors; the heaviest, tallest mass sits in the SW.</li>
+        <li><b>Stair in the south</b>, rising clockwise, kept out of the centre and the north-east.</li>
+        <li><b>Garage in the south-east</b> next to the main road, with an inside door into the foyer.</li>
+        <li><b>North-east kept light and low</b>: the pooja is a small room in the true NE corner, on the terrace over the store, kept lower than the main block; the rest of the kitchen and dining roofs stay open terrace. It shares no wall with a toilet and has none above or below it.</li>
+        <li><b>Toilets in the west/north-west</b>, none in the NE or the centre. The ground floor has one attached bath and one common bath off the living for guests.</li>
+      </ul>
+    </div>
+    <div>
+      <h2>EAST WING · KITCHEN AND STORE</h2>
+      <ul>
+        <li>Kitchen takes the south part of the wing, the closest to the south-east fire corner. The <b>hob sits in the kitchen's SE corner</b> on the east wall, so the cook faces east.</li>
+        <li>Store + utility take the north part. Because that is the house's NE, keep the store light (pantry, crockery), not heavy grain or junk storage.</li>
+        <li>Kitchen opens to the dining through a 3′ opening; a side door to the 4′ east passage serves gas, waste and the wash area.</li>
+        <li>East wall is the side-road wall: high windows only, for light and privacy.</li>
+      </ul>
+      <p style="font-size:12px;color:var(--muted);margin:8px 0 0">Concept plan. Have a local architect check structure, bye-law setbacks and stair headroom before drawings.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const S = 12, OX = 55, OY = -5;
+const X = f => OX + (f - 4) * S + 40, Y = f => OY + f * S;
+const NS = 'http://www.w3.org/2000/svg';
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+
+function plan(id, rooms, extra) {
+  const svg = document.getElementById(id);
+  const el = (tag, a, t) => { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); if (t != null) e.textContent = t; svg.appendChild(e); return e; };
+  const R = (x0, y0, x1, y1, a) => el('rect', { x: X(x0), y: Y(y0), width: (x1 - x0) * S, height: (y1 - y0) * S, ...a });
+  const T = (x, y, s, a = {}) => el('text', { x, y, 'text-anchor': 'middle', 'font-size': 11, fill: css('--ink'), ...a }, s);
+  const api = { el, R, T, svg };
+
+  // road + plot
+  R(4, 1.2, 52.5, 4.6, { fill: '#6f6a62' });
+  T(X(28), Y(3.3), 'MAIN ROAD · SOUTH · FRONT', { fill: '#fff', 'font-size': 10, 'font-weight': 600, 'letter-spacing': '.08em' });
+  el('polygon', { points: [[17, 5], [52, 5], [52, 45], [0.6, 45], [0.6, 22], [17, 22]].map(([x, y]) => `${X(x)},${Y(y)}`).join(' '),
+    fill: 'none', stroke: css('--accent'), 'stroke-width': 1.2, 'stroke-dasharray': '6 4' });
+  R(0.6, 5, 17, 22, { fill: '#e7e2d9' });
+  T(X(8.8), Y(13.5), 'neighbour', { fill: css('--muted'), 'font-size': 10 });
+  T(X(8.8), Y(14.6), '(cut-out)', { fill: css('--muted'), 'font-size': 10 });
+
+  for (const r of rooms) {
+    R(r.r[0], r.r[1], r.r[2], r.r[3], { fill: css(r.c), stroke: css('--ink'), 'stroke-width': r.thin ? 0.8 : 1.6, ...(r.dash ? { 'stroke-dasharray': '4 3' } : {}) });
+    const cx = X((r.r[0] + r.r[2]) / 2) + (r.dx || 0), cy = Y((r.r[1] + r.r[3]) / 2) + (r.dy || 0);
+    const w = r.r[2] - r.r[0], h = r.r[3] - r.r[1];
+    const small = Math.min(w, h) < 5.5;
+    T(cx, cy - (r.n ? 2 : -4), r.l, { 'font-size': small ? 9.5 : 11.5, 'font-weight': 600, ...(r.rot ? { transform: `rotate(-90 ${cx} ${cy})` } : {}) });
+    if (r.n) T(cx, cy + 11, r.n, { 'font-size': small ? 9 : 10.5, fill: css('--muted'), ...(r.rot ? { transform: `rotate(-90 ${cx} ${cy})` } : {}) });
+  }
+  extra(api);
+
+  // outer wall of the construction area
+  el('polygon', { points: [[18, 15], [51, 15], [51, 44], [4, 44], [4, 23], [18, 23]].map(([x, y]) => `${X(x)},${Y(y)}`).join(' '),
+    fill: 'none', stroke: css('--ink'), 'stroke-width': 3.5 });
+  // compass
+  const cx = X(1.5), cy = Y(39.5);
+  T(cx, cy - 14, 'S', { 'font-weight': 600, 'font-size': 10 });
+  el('polygon', { points: `${cx},${cy + 9} ${cx - 4},${cy - 6} ${cx + 4},${cy - 6}`, fill: css('--accent') });
+  T(cx, cy + 22, 'N', { 'font-weight': 600, 'font-size': 10, fill: css('--accent') });
+  return api;
+}
+
+// door: on a horizontal wall (y fixed) from x..x+w, or vertical wall (x fixed) from y..y+w; swing side +1/-1
+function door(api, o, a, b, w, side = 1) {
+  const { el } = api, bg = css('--bg');
+  if (o === 'h') {
+    el('line', { x1: X(a), y1: Y(b), x2: X(a + w), y2: Y(b), stroke: '#fbf8f2', 'stroke-width': 4 });
+    el('path', { d: `M${X(a)},${Y(b)} L${X(a)},${Y(b + side * w)} A${w * S},${w * S} 0 0 ${side > 0 ? 0 : 1} ${X(a + w)},${Y(b)}`, fill: 'none', stroke: css('--accent'), 'stroke-width': .9 });
+  } else {
+    el('line', { x1: X(a), y1: Y(b), x2: X(a), y2: Y(b + w), stroke: '#fbf8f2', 'stroke-width': 4 });
+    el('path', { d: `M${X(a)},${Y(b)} L${X(a + side * w)},${Y(b)} A${w * S},${w * S} 0 0 ${side > 0 ? 1 : 0} ${X(a)},${Y(b + w)}`, fill: 'none', stroke: css('--accent'), 'stroke-width': .9 });
+  }
+}
+function opening(api, o, a, b, w) {   // doorless opening
+  const { el } = api;
+  if (o === 'h') el('line', { x1: X(a), y1: Y(b), x2: X(a + w), y2: Y(b), stroke: '#fbf8f2', 'stroke-width': 4 });
+  else el('line', { x1: X(a), y1: Y(b), x2: X(a), y2: Y(b + w), stroke: '#fbf8f2', 'stroke-width': 4 });
+}
+function windowMark(api, o, a, b, w) {
+  const { el } = api;
+  if (o === 'h') { el('line', { x1: X(a), y1: Y(b), x2: X(a + w), y2: Y(b), stroke: '#fbf8f2', 'stroke-width': 4 });
+    el('line', { x1: X(a), y1: Y(b), x2: X(a + w), y2: Y(b), stroke: '#5b8aa0', 'stroke-width': 1.6 }); }
+  else { el('line', { x1: X(a), y1: Y(b), x2: X(a), y2: Y(b + w), stroke: '#fbf8f2', 'stroke-width': 4 });
+    el('line', { x1: X(a), y1: Y(b), x2: X(a), y2: Y(b + w), stroke: '#5b8aa0', 'stroke-width': 1.6 }); }
+}
+// dog-leg stair in [32.5,15,39,26]: landing at the south end, flights run north–south; up = clockwise
+function stair(api, label) {
+  const { el, T } = api;
+  const x0 = 32.5, x1 = 39, y0 = 18.5, y1 = 26;
+  for (let y = y0; y <= y1 + 0.01; y += 0.75) el('line', { x1: X(x0), y1: Y(y), x2: X(x1), y2: Y(y), stroke: css('--ink'), 'stroke-width': .6, 'stroke-opacity': .6 });
+  el('line', { x1: X(35.75), y1: Y(y0), x2: X(35.75), y2: Y(y1), stroke: css('--ink'), 'stroke-width': 1.2 });
+  el('line', { x1: X(x0), y1: Y(y0), x2: X(x1), y2: Y(y0), stroke: css('--ink'), 'stroke-width': .9 });
+  // arrow: from the lobby south up the east flight, turn at the landing, north up the west flight (clockwise)
+  el('path', { d: `M${X(34.1)},${Y(25.5)} L${X(34.1)},${Y(17)} L${X(37.4)},${Y(17)} L${X(37.4)},${Y(24.5)}`, fill: 'none', stroke: css('--accent'), 'stroke-width': 1.3 });
+  el('polygon', { points: `${X(37.4)},${Y(25.3)} ${X(37.4) - 4},${Y(24.3)} ${X(37.4) + 4},${Y(24.3)}`, fill: css('--accent') });
+  T(X(35.75), Y(16.6) + 3, label, { 'font-size': 9.5, 'font-weight': 600, fill: css('--muted') });
+}
+
+// ---------- GROUND FLOOR ----------
+plan('gf', [
+  { r: [27.5, 8, 37, 15], c: '--outdoor', l: 'PORTICO', n: '9½′ × 7′', dy: -16 },
+  { r: [18, 15, 28.5, 33], c: '--garage', l: 'GARAGE', n: '10½′ × 18′' },
+  { r: [28.5, 15, 32.5, 26], c: '--circ', l: 'FOYER', n: '4′ × 11′', rot: true },
+  { r: [32.5, 15, 39, 26], c: '--stair', l: '' },
+  { r: [28.5, 26, 45.5, 44], c: '--living', l: 'LIVING', n: '17′ × 16½′ · open to dining', thin: true, dy: 18 },
+  { r: [39, 15, 51, 27.5], c: '--bed', l: 'BEDROOM 1 · SW', n: '12′ × 12½′' },
+  { r: [45.5, 27.5, 51, 35.5], c: '--wet', l: 'ATTACHED', n: '5½′ × 8′', rot: true, dy: 10 },
+  { r: [45.5, 35.5, 51, 44], c: '--wet', l: 'COMMON', n: '5½′ × 8½′', rot: true, dy: -10 },
+  { r: [18, 33, 28.5, 44], c: '--living', l: 'DINING', n: '10½′ × 11′', thin: true },
+  { r: [4, 23, 18, 36], c: '--kitchen', l: 'KITCHEN', n: '14′ × 13′', dx: 14 },
+  { r: [4, 36, 11, 44], c: '--kitchen', l: 'STORE', n: '7′ × 8′' },
+  { r: [11, 36, 18, 44], c: '--wet', l: 'UTILITY', n: '7′ × 8′' },
+], api => {
+  const { el, T, R } = api;
+  stair(api, 'UP');
+  // portico pillars + steps
+  for (const [x, y] of [[27.9, 8.4], [36.6, 8.4]]) R(x - 0.45, y - 0.45, x + 0.45, y + 0.45, { fill: css('--ink') });
+  for (const y of [12.6, 13.4, 14.2]) el('line', { x1: X(28.6), y1: Y(y), x2: X(33), y2: Y(y), stroke: css('--ink'), 'stroke-width': .6, 'stroke-opacity': .6 });
+  // main door at S4 pada, garage door, inner doors
+  door(api, 'h', 29, 15, 3.5, 1);
+  T(X(32.25), Y(12.1), 'MAIN DOOR · S4', { 'font-size': 9, 'font-weight': 600, fill: css('--accent') });
+  el('line', { x1: X(18.6), y1: Y(15), x2: X(27.9), y2: Y(15), stroke: '#8a8d90', 'stroke-width': 5 });
+  T(X(23.2), Y(13.6), 'garage shutter', { 'font-size': 9, fill: css('--muted') });
+  T(X(23.2), Y(9.5), 'CAR APRON', { 'font-size': 10, 'font-weight': 600, fill: '#4d5a40' });
+  T(X(23.2), Y(10.6), 'driveway from the road', { 'font-size': 9, fill: '#4d5a40' });
+  T(X(43), Y(10), 'FRONT LAWN', { 'font-size': 10, 'font-weight': 600, fill: '#4d5a40' });
+  door(api, 'v', 28.5, 21.5, 3, -1);                 // garage → foyer
+  opening(api, 'h', 28.5, 26, 4);                    // foyer → lobby
+  door(api, 'h', 39.5, 27.5, 3, -1);                 // bed1 from the living
+  door(api, 'h', 46.75, 27.5, 2.5, 1);               // attached bath from bed1
+  door(api, 'v', 45.5, 41.2, 2.5, 1);                // common bath from the living
+  opening(api, 'v', 18, 33, 3);                      // kitchen → dining
+  door(api, 'v', 18, 37, 2.8, 1);                    // utility
+  door(api, 'h', 6.5, 36, 2.5, 1);                   // store from kitchen
+  door(api, 'v', 4, 31, 2.8, 1);                     // kitchen side door to the 4′ passage
+  // hob in the kitchen's SE corner, on the east wall
+  R(4.1, 23.1, 6.3, 28.5, { fill: '#c9b39a', stroke: css('--ink'), 'stroke-width': .6 });
+  for (const [x, y] of [[5.2, 24.6], [5.2, 26.6]]) el('circle', { cx: X(x), cy: Y(y), r: 5, fill: 'none', stroke: css('--ink'), 'stroke-width': .8 });
+  T(X(7.6), Y(25.5), 'hob', { 'font-size': 9, fill: css('--muted') });
+  R(4.1, 28.5, 6.3, 34.5, { fill: '#e2cdb6', stroke: css('--ink'), 'stroke-width': .5 });
+  T(X(2.2), Y(31) - 2, 'service', { 'font-size': 8.5, fill: css('--accent'), transform: `rotate(-90 ${X(2.2)} ${Y(31)})` });
+  // windows
+  windowMark(api, 'h', 41.5, 15, 7); windowMark(api, 'v', 51, 17, 6); windowMark(api, 'v', 51, 36, 5);
+  windowMark(api, 'h', 42, 44, 6); windowMark(api, 'h', 30, 44, 7); windowMark(api, 'h', 22.5, 44, 5);
+  windowMark(api, 'h', 7, 23, 6); windowMark(api, 'v', 4, 38, 3);
+});
+
+// ---------- FIRST FLOOR ----------
+plan('ff', [
+  { r: [27.5, 8, 37, 15], c: '--outdoor', l: 'BALCONY', n: 'mountain view' },
+  { r: [18, 15, 28.5, 26], c: '--bed', l: 'BEDROOM 3', n: '10½′ × 11′' },
+  { r: [18, 26, 23, 33], c: '--wet', l: 'BATH', n: '5×7', rot: true },
+  { r: [28.5, 15, 32.5, 26], c: '--circ', l: 'GALLERY', n: 'to balcony', rot: true },
+  { r: [32.5, 15, 39, 26], c: '--stair', l: '' },
+  { r: [39, 15, 51, 26], c: '--bed', l: 'MASTER · SW', n: '12′ × 11′' },
+  { r: [42.5, 26, 46.5, 33], c: '--circ', l: 'DRESS', n: '4×7', rot: true },
+  { r: [46.5, 26, 51, 33], c: '--wet', l: 'BATH', n: '4½×7', rot: true },
+  { r: [23, 26, 42.5, 33], c: '--living', l: 'FAMILY LOUNGE', n: '19½′ × 7′', thin: true },
+  { r: [28.5, 33, 39, 38], c: '--living', l: 'LOUNGE', n: 'TV / reading', thin: true },
+  { r: [28.5, 38, 33, 44], c: '--circ', l: 'STUDY', n: 'nook', thin: true },
+  { r: [33, 38, 39, 44], c: '--wet', l: 'BATH', n: '6′ × 6′' },
+  { r: [39, 33, 51, 44], c: '--bed', l: 'BEDROOM 4 · NW', n: '12′ × 11′' },
+  { r: [18, 33, 28.5, 44], c: '--outdoor', l: 'TERRACE', n: 'over dining', dash: true, thin: true },
+  { r: [4, 23, 18, 44], c: '--outdoor', l: 'OPEN TERRACE', n: 'roof of the east wing', dash: true, thin: true, dy: -30 },
+  { r: [4, 38, 9, 44], c: '--pooja', l: 'POOJA', n: '5′ × 6′ · NE' },
+], api => {
+  const { el, T } = api;
+  stair(api, 'UP / DN');
+  door(api, 'h', 29, 15, 3.5, -1);                   // gallery → balcony
+  door(api, 'v', 28.5, 18, 3, 1);                    // bed3
+  door(api, 'h', 19, 26, 2.5, 1);                    // bath3
+  opening(api, 'h', 28.5, 26, 4);                    // gallery → lounge
+  door(api, 'h', 39.1, 26, 2.8, -1);                 // master
+  opening(api, 'h', 43, 26, 3);                      // master → dress
+  door(api, 'h', 47.25, 26, 2.5, 1);                 // master bath
+  door(api, 'h', 39.5, 33, 3, 1);                    // bed4
+  door(api, 'v', 39, 39.5, 2.5, -1);                 // bath4 from bed4
+  door(api, 'v', 28.5, 34.5, 3, -1);                 // lounge → terrace
+  opening(api, 'h', 29, 38, 3.5);                    // study nook open to the lounge
+  door(api, 'v', 9, 39.5, 2.5, 1);                   // pooja, entered from the terrace
+  windowMark(api, 'h', 20, 15, 7); windowMark(api, 'h', 41.5, 15, 7); windowMark(api, 'v', 51, 17, 6);
+  windowMark(api, 'v', 51, 36, 5); windowMark(api, 'h', 42, 44, 6); windowMark(api, 'h', 29, 44, 3);
+  // parapet line of the terrace
+  el('polyline', { points: [[28.5, 44], [4, 44], [4, 23], [18, 23], [18, 26]].map(([x, y]) => `${X(x)},${Y(y)}`).join(' '), fill: 'none', stroke: '#7b8a6a', 'stroke-width': 1, 'stroke-dasharray': '2 3' });
+});
+</script>
+</body>
+</html>
