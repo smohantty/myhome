@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Site plan v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f1ea; --ink: #2b2925; --muted: #6b665e; --rule: #ddd6ca; --accent: #b4623c;
+    --road: #6f6a62; --plot: #2b2925; --built: #e8dcc6; --open: #dfe6d3; --gap: #f0d9c9;
+    --neigh: #c8c2b8; --neigh2: #ebe6df;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.5 'IBM Plex Sans', system-ui, sans-serif; }
+  .sheet { width: 1400px; height: 1000px; display: flex; gap: 24px; padding: 28px 36px; }
+  svg { flex: none; }
+  svg text { font-family: 'IBM Plex Sans', sans-serif; }
+  .side { flex: 1; padding-top: 12px; }
+  .eyebrow { color: var(--accent); letter-spacing: .14em; font-size: 12px; font-weight: 600; }
+  h1 { font-family: 'Fraunces', serif; font-size: 40px; margin: 4px 0 2px; line-height: 1.1; }
+  .sub { color: var(--muted); margin: 0 0 18px; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  td { padding: 6px 0; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  td:last-child { text-align: right; white-space: nowrap; padding-left: 12px; }
+  tr.total td { font-weight: 600; }
+  .sw { display: inline-block; width: 10px; height: 10px; border: 1px solid #0003; margin-right: 6px; vertical-align: -1px; }
+  h2 { font-size: 12px; letter-spacing: .14em; color: var(--muted); margin: 20px 0 6px; font-weight: 600; }
+  .note { color: var(--muted); font-size: 12.5px; margin-top: 18px; }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <svg id="plan" width="820" height="944" viewBox="0 0 820 944"></svg>
+  <div class="side">
+    <div class="eyebrow">DUPLEX · VASTU SETBACKS</div>
+    <h1>Site plan v2</h1>
+    <p class="sub">Construction area inside the plot, with every gap and open space mapped.</p>
+
+    <h2>PLOT</h2>
+    <table>
+      <tr><td>Main block plot</td><td>35′ × 45′ = 1,575 sq ft</td></tr>
+      <tr><td>East wing plot (the L)</td><td>17′ × 23′ = 391 sq ft</td></tr>
+      <tr class="total"><td>Total plot</td><td>1,966 sq ft</td></tr>
+    </table>
+
+    <h2>CONSTRUCTION (FOOTPRINT)</h2>
+    <table>
+      <tr><td><span class="sw" style="background:var(--built)"></span>Main block · 1′ gap W, E &amp; back, 29′ deep</td><td>33′ × 29′ = 957 sq ft</td></tr>
+      <tr><td><span class="sw" style="background:var(--built)"></span>East wing · 1′ gap N &amp; S, 4′ at the side-road end</td><td>14′ × 21′ = 294 sq ft</td></tr>
+      <tr class="total"><td>Total construction</td><td>1,251 sq ft · 64%</td></tr>
+    </table>
+
+    <h2>OPEN SPACE AND GAPS</h2>
+    <table>
+      <tr><td><span class="sw" style="background:var(--open)"></span>Front open space (south, facing the road)</td><td>35′ × 15′ = 525 sq ft</td></tr>
+      <tr><td><span class="sw" style="background:var(--gap)"></span>Wing end gap (east, along the side road)</td><td>4′ × 23′ = 92 sq ft</td></tr>
+      <tr><td><span class="sw" style="background:var(--gap)"></span>West gap along the west neighbour</td><td>1′ × 30′ = 30 sq ft</td></tr>
+      <tr><td><span class="sw" style="background:var(--gap)"></span>Back (north) gap, along the whole L</td><td>47′ × 1′ = 47 sq ft</td></tr>
+      <tr><td><span class="sw" style="background:var(--gap)"></span>Wing south gap (against the 2-storey neighbour)</td><td>14′ × 1′ = 14 sq ft</td></tr>
+      <tr><td><span class="sw" style="background:var(--gap)"></span>East gap of main block beside the cut-out</td><td>1′ × 7′ = 7 sq ft</td></tr>
+      <tr class="total"><td>Total open</td><td>715 sq ft · 36%</td></tr>
+    </table>
+
+    <p class="note">Check: 1,251 built + 715 open = 1,966 sq ft plot.<br>
+    A 1′ gap runs right around the building except the front, so the construction is one clean L with a straight back wall.
+    North points down on this sheet because the road is on top.</p>
+  </div>
+</div>
+
+<script>
+const S = 12;                 // px per foot
+const OX = 110, OY = 185;     // plot origin (east side-road edge, front road edge)
+const X = f => OX + f * S, Y = f => OY + f * S;
+const svg = document.getElementById('plan');
+const NS = 'http://www.w3.org/2000/svg';
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+function el(tag, attrs, text) {
+  const e = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, v);
+  if (text != null) e.textContent = text;
+  svg.appendChild(e);
+  return e;
+}
+const rect = (x0, y0, x1, y1, a) => el('rect', { x: X(x0), y: Y(y0), width: (x1 - x0) * S, height: (y1 - y0) * S, ...a });
+const poly = (pts, a) => el('polygon', { points: pts.map(([x, y]) => `${X(x)},${Y(y)}`).join(' '), ...a });
+const text = (x, y, s, a = {}) => el('text', { x, y, 'text-anchor': 'middle', 'font-size': 11, fill: css('--ink'), ...a }, s);
+
+// hatch for gaps
+const defs = el('defs', {});
+defs.innerHTML = `<pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+  <rect width="6" height="6" fill="${css('--gap')}"/><line x1="0" y1="0" x2="0" y2="6" stroke="${css('--accent')}" stroke-opacity=".45" stroke-width="1.2"/></pattern>`;
+
+// mountains + roads + neighbours
+el('polygon', { points: `${X(2)},${Y(-6)} ${X(8)},${Y(-11)} ${X(14)},${Y(-8)} ${X(22)},${Y(-14)} ${X(31)},${Y(-8.5)} ${X(37)},${Y(-11)} ${X(43)},${Y(-7.5)} ${X(49)},${Y(-10.5)} ${X(56)},${Y(-6)}`,
+  fill: '#dfe6d3', stroke: '#7b8a6a', 'stroke-width': 1.2 });
+text(X(29), Y(-6.6), 'MOUNTAINS · view to the south', { fill: '#4d5a40', 'font-size': 10, 'letter-spacing': '.06em' });
+rect(-6, -5.6, 56, -2.2, { fill: css('--road') });
+text(X(30), Y(-3.6), 'MAIN ROAD · SOUTH SIDE · FRONT', { fill: '#fff', 'font-weight': 600, 'letter-spacing': '.08em', 'font-size': 10.5 });
+rect(-5.2, -2.2, -1.8, 52, { fill: css('--road') });
+text(0, 0, 'SIDE ROAD · EAST', { fill: '#fff', 'font-weight': 600, 'letter-spacing': '.08em', 'font-size': 10.5,
+  transform: `translate(${X(-3.3)},${Y(36)}) rotate(-90)` });
+rect(53, 0, 56.5, 45, { fill: css('--neigh2'), stroke: '#b9b2a6' });
+text(0, 0, 'WEST NEIGHBOUR · ground floor only', { fill: css('--muted'), 'font-size': 9.5, transform: `translate(${X(54.9)},${Y(22.5)}) rotate(90)` });
+rect(0, 46, 52, 51, { fill: css('--neigh2'), stroke: '#b9b2a6' });
+text(X(26), Y(48.8), 'NORTH NEIGHBOUR · ground floor only', { fill: css('--muted'), 'font-size': 9.5 });
+rect(0, 0, 17, 22, { fill: css('--neigh'), stroke: '#9d968a' });
+text(X(8.5), Y(10.6), '2-STOREY BUILDING', { 'font-weight': 600, 'font-size': 10.5 });
+text(X(8.5), Y(11.9), 'neighbour · G+1 · cut-out', { fill: css('--muted'), 'font-size': 9.5 });
+
+// open + gaps
+rect(17, 0, 52, 15, { fill: css('--open') });
+for (const g of [[51, 15, 52, 45], [17, 15, 18, 23], [4, 22, 17, 23], [4, 44, 51, 45], [0, 22, 4, 45]]) rect(...g, { fill: 'url(#hatch)' });
+
+// construction
+poly([[18, 15], [51, 15], [51, 44], [4, 44], [4, 23], [18, 23]],
+  { fill: css('--built'), stroke: css('--ink'), 'stroke-width': 3, 'stroke-linejoin': 'miter' });
+text(X(34.5), Y(30), 'CONSTRUCTION AREA', { 'font-weight': 600, 'font-size': 14, 'letter-spacing': '.06em' });
+text(X(34.5), Y(31.4), 'main block 33′ × 29′ = 957 sq ft', { fill: css('--muted'), 'font-size': 11 });
+text(X(11), Y(33.2), 'EAST WING', { 'font-weight': 600, 'font-size': 11.5, 'letter-spacing': '.06em' });
+text(X(11), Y(34.5), '14′ × 21′ = 294 sq ft', { fill: css('--muted'), 'font-size': 10.5 });
+el('line', { x1: X(18), y1: Y(23), x2: X(18), y2: Y(44), stroke: css('--ink'), 'stroke-width': 1, 'stroke-dasharray': '3 4', 'stroke-opacity': .4 });
+
+// plot boundary
+poly([[17, 0], [52, 0], [52, 45], [0, 45], [0, 22], [17, 22]], { fill: 'none', stroke: css('--accent'), 'stroke-width': 1.6, 'stroke-dasharray': '8 5' });
+
+// labels inside gaps
+text(X(34.5), Y(7.4), 'FRONT OPEN SPACE', { 'font-weight': 600, 'font-size': 13, fill: '#4d5a40', 'letter-spacing': '.06em' });
+text(X(34.5), Y(8.8), '35′ × 15′ = 525 sq ft · garden, car apron, entry path', { fill: '#4d5a40', 'font-size': 11 });
+text(0, 0, '4′ end gap · 92 sq ft', { 'font-size': 10.5, 'font-weight': 600, fill: css('--accent'),
+  transform: `translate(${X(2) + 4},${Y(33.5)}) rotate(-90)` });
+
+// leader-labelled 1′ strips
+function leader(px, py, lx, ly, label, anchor = 'start') {
+  el('line', { x1: px, y1: py, x2: lx, y2: ly, stroke: css('--accent'), 'stroke-width': 1 });
+  el('circle', { cx: px, cy: py, r: 2.5, fill: css('--accent') });
+  text(lx + (anchor === 'start' ? 4 : -4), ly + 4, label, { 'text-anchor': anchor, fill: css('--accent'), 'font-size': 10.5, 'font-weight': 600 });
+}
+leader(X(51.5), Y(38), X(51.5) - 70, Y(41.5), '1′ west gap · 30 sq ft', 'end');
+leader(X(17.5), Y(19), X(26), Y(19), '1′ gap · 7 sq ft');
+leader(X(11), Y(22.5), X(11), Y(27.5), '');
+text(X(11), Y(28.6), '1′ south gap · 14 sq ft', { fill: css('--accent'), 'font-size': 10.5, 'font-weight': 600 });
+leader(X(11), Y(44.5), X(11), Y(40), '');
+text(X(11), Y(39.4), '1′ back gap · 47 sq ft (full length)', { fill: css('--accent'), 'font-size': 10.5, 'font-weight': 600 });
+
+// dimension chains
+function dimH(y, stops, off = 0) {
+  el('line', { x1: X(stops[0]), y1: Y(y), x2: X(stops.at(-1)), y2: Y(y), stroke: css('--ink'), 'stroke-width': .8 });
+  stops.forEach(s => el('line', { x1: X(s), y1: Y(y) - 5, x2: X(s), y2: Y(y) + 5, stroke: css('--ink'), 'stroke-width': .8 }));
+  for (let i = 1; i < stops.length; i++) text(X((stops[i] + stops[i - 1]) / 2), Y(y) - 5 + off, `${stops[i] - stops[i - 1]}′`, { 'font-size': 11.5, 'font-weight': 600 });
+}
+function dimV(x, stops, side = -1) {
+  el('line', { x1: X(x), y1: Y(stops[0]), x2: X(x), y2: Y(stops.at(-1)), stroke: css('--ink'), 'stroke-width': .8 });
+  stops.forEach(s => el('line', { x1: X(x) - 5, y1: Y(s), x2: X(x) + 5, y2: Y(s), stroke: css('--ink'), 'stroke-width': .8 }));
+  for (let i = 1; i < stops.length; i++) {
+    const cy = Y((stops[i] + stops[i - 1]) / 2), cx = X(x) + side * 8;
+    text(0, 0, `${stops[i] - stops[i - 1]}′`, { 'font-size': 11.5, 'font-weight': 600, transform: `translate(${cx},${cy}) rotate(-90)`, 'dominant-baseline': 'middle' });
+  }
+}
+dimH(-1, [17, 18, 51, 52]);                 // front: 1′ · 33′ · 1′
+dimH(53.2, [0, 4, 18, 51, 52], 14);         // back chain: 4′ · 14′ · 33′ · 1′ = 52′
+text(X(26), Y(53.2) + 26, 'plot width at the back 52′ (17′ wing + 35′ main)', { fill: css('--muted'), 'font-size': 10 });
+dimV(58.2, [0, 15, 44, 45], 1);             // west: 15′ open + 29′ built + 1′ back gap
+dimV(-7, [22, 23, 44, 45], -1);             // wing: 1′ · 21′ · 1′
+
+// compass (north down)
+const cx = X(-1.5), cy = Y(58.5);
+el('circle', { cx, cy, r: 26, fill: 'none', stroke: css('--ink'), 'stroke-width': 1 });
+el('polygon', { points: `${cx},${cy + 24} ${cx - 6},${cy} ${cx + 6},${cy}`, fill: css('--ink') });
+el('polygon', { points: `${cx},${cy - 24} ${cx - 6},${cy} ${cx + 6},${cy}`, fill: 'none', stroke: css('--ink') });
+text(cx, cy - 31, 'S', { 'font-weight': 600, 'font-size': 12 });
+text(cx, cy + 42, 'N', { 'font-weight': 600, 'font-size': 12, fill: css('--accent') });
+text(cx - 34, cy + 4, 'E', { 'font-weight': 600, 'font-size': 11 });
+text(cx + 34, cy + 4, 'W', { 'font-weight': 600, 'font-size': 11 });
+
+// legend
+const lg = [[css('--built'), 'Construction'], [css('--open'), 'Open space'], ['url(#hatch)', 'Gap / setback'], ['none', 'Plot boundary']];
+lg.forEach(([f, l], i) => {
+  const lx = X(10) + i * 130, ly = Y(60);
+  if (f === 'none') el('line', { x1: lx, y1: ly + 6, x2: lx + 16, y2: ly + 6, stroke: css('--accent'), 'stroke-width': 1.6, 'stroke-dasharray': '5 3' });
+  else el('rect', { x: lx, y: ly, width: 16, height: 12, fill: f, stroke: '#0004' });
+  text(lx + 22, ly + 10, l, { 'text-anchor': 'start', 'font-size': 11 });
+});
+</script>
+</body>
+</html>
