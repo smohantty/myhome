@@ -7,6 +7,16 @@ is a tab in the viewer: walk through it in 3D, or flip to its photo-real renders
 
 ![Front of the house (v1)](designs/v1/renders/front.png)
 
+## Site
+
+**Chandikhole (Chandikhol), Dharmasala block, Jajpur district, Odisha 755044, India**:
+[Google Maps](https://www.google.com/maps/search/?api=1&query=20.69944,86.13389) ·
+[Google Earth 3D](https://earth.google.com/web/@20.69944,86.13389,40a,900d,35y,0h,60t,0r)
+(20.6994° N, 86.1339° E, town centre; the exact plot pin is still to be added).
+Hot-humid tropical climate: hot March–June (≈ 40 °C), south-west monsoon June–October, mild winters.
+Exposed to Bay of Bengal cyclones (May–June, October–November); seismic zone III.
+The plot and its setbacks are in [`plans/site-plan-v2.png`](plans/site-plan-v2.png).
+
 ## Versions
 
 | Tab | Idea |
@@ -17,7 +27,7 @@ is a tab in the viewer: walk through it in 3D, or flip to its photo-real renders
 | **V4 · Site plan v2 · 4BHK** (`#v4`) | The [`plans/house-plan-v4.png`](plans/house-plan-v4.png) plan built in 3D, inside the setback L of [`plans/site-plan-v2.png`](plans/site-plan-v2.png): S4 main door in a 4′ × 5′ portico recessed into the front with a balcony above (nothing built in the 15′ front open space), floating open-riser stair in the south with winders and 19 steps, garage SE, 1 bedroom down (SW, attached bath) + common bath, master SW + bedrooms 3 and 4 up, kitchen/store/utility in the east wing, pooja in the NE corner of the terrace. No photo-real renders yet |
 | **V5 · Wide portico** (`#v5`) | [`plans/house-plan-v5.png`](plans/house-plan-v5.png): V4 with a 10½′ × 5′ recessed portico and balcony; to fit it the stair moves 5′ north, over the centre of the main block (against Vastu). Living becomes 17′ × 13′ + lobby. No photo-real renders yet |
 | **V6 · Open garage** (`#v6`) | [`plans/house-plan-v6.png`](plans/house-plan-v6.png): V4 without a portico: the garage is an open carport and the S4 main door sits flush on the front wall right beside it, with a side door from the carport into the foyer for a covered entry. Foyer back to 4′ × 11′, gallery upstairs with a front window. Same floating winder stair as V4. No photo-real renders yet |
-| **V7 · Nordic gable** (`#v7`) | [`plans/house-plan-v7.png`](plans/house-plan-v7.png): no Vastu or room-count constraints, just the most beautiful house on the same L. One black-clad Scandinavian gable (38° standing-seam roof, ridge north–south) whose glass end faces the mountains from floor to ridge over a double-height great room with a wood stove; floating oak stair behind a full-height slat screen; snug, kitchen, dining, library downstairs; master + 2 bedrooms vaulted to the roof upstairs. White east wing with boot room, guest suite and sauna, and a bedroom opening onto a hot-tub sky deck under a pergola. No photo-real renders yet |
+| **V7 · Odisha modern** (`#v7`) | [`plans/house-plan-v7.png`](plans/house-plan-v7.png): the V6 Vastu plan built as a tropical-modern concrete house for Chandikhole: floating board-formed concrete parasol roof over the main block, red laterite ground floor and compound wall, white lime render above, deep concrete hoods on the south windows, teak fins on the west, a terracotta jaali over the stair window, 1½′ raised plinth and 11′ ceilings, concrete door canopy, NE terrace pergola. Photo-real renders: front, 3/4, entry, living, aerial |
 
 ## Layout
 

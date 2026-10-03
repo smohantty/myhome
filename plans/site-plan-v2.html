@@ -13,7 +13,7 @@
   }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.5 'IBM Plex Sans', system-ui, sans-serif; }
-  .sheet { width: 1400px; height: 1000px; display: flex; gap: 24px; padding: 28px 36px; }
+  .sheet { width: 1400px; min-height: 1000px; display: flex; gap: 24px; padding: 28px 36px; }
   svg { flex: none; }
   svg text { font-family: 'IBM Plex Sans', sans-serif; }
   .side { flex: 1; padding-top: 12px; }
@@ -27,13 +27,15 @@
   .sw { display: inline-block; width: 10px; height: 10px; border: 1px solid #0003; margin-right: 6px; vertical-align: -1px; }
   h2 { font-size: 12px; letter-spacing: .14em; color: var(--muted); margin: 20px 0 6px; font-weight: 600; }
   .note { color: var(--muted); font-size: 12.5px; margin-top: 18px; }
+  table.loc td { padding: 3.5px 0; font-size: 12.5px; }
+  table.loc a { color: var(--accent); text-decoration: none; }
 </style>
 </head>
 <body>
 <div class="sheet">
   <svg id="plan" width="820" height="944" viewBox="0 0 820 944"></svg>
   <div class="side">
-    <div class="eyebrow">DUPLEX · VASTU SETBACKS</div>
+    <div class="eyebrow">DUPLEX · VASTU SETBACKS · CHANDIKHOLE, ODISHA</div>
     <h1>Site plan v2</h1>
     <p class="sub">Construction area inside the plot, with every gap and open space mapped.</p>
 
@@ -65,6 +67,16 @@
     <p class="note">Check: 1,251 built + 715 open = 1,966 sq ft plot.<br>
     A 1′ gap runs right around the building except the front, so the construction is one clean L with a straight back wall.
     North points down on this sheet because the road is on top.</p>
+
+    <h2>LOCATION</h2>
+    <table class="loc">
+      <tr><td colspan="2">Chandikhole (Chandikhol), Dharmasala block, Jajpur district, Odisha 755044, India</td></tr>
+      <tr><td>Coordinates (town centre · plot pin to come)</td><td>20.6994° N, 86.1339° E</td></tr>
+      <tr><td>Google Maps</td><td><a href="https://www.google.com/maps/search/?api=1&amp;query=20.69944,86.13389">google.com/maps · 20.69944,86.13389</a></td></tr>
+      <tr><td>Google Earth (3D)</td><td><a href="https://earth.google.com/web/@20.69944,86.13389,40a,900d,35y,0h,60t,0r">earth.google.com · 3D view</a></td></tr>
+      <tr><td colspan="2">Climate: hot-humid tropical; hot Mar–Jun (≈ 40 °C), SW monsoon Jun–Oct, mild winters</td></tr>
+      <tr><td colspan="2">Hazards: Bay of Bengal cyclones (May–Jun, Oct–Nov) · seismic zone III</td></tr>
+    </table>
   </div>
 </div>
 

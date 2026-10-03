@@ -214,6 +214,52 @@ MAT['black_metal'] = principled('BlackMetal', (0.02, 0.02, 0.02), rough=0.4, met
 MAT['stone'] = pbr('StoneCladding', 'granite_wall', 1.4, tint=(0.30, 0.28, 0.26), normal=1.2)
 MAT['terracotta'] = pbr('TerracottaJaali', 'clay_plaster', 0.8, tint=(0.52, 0.21, 0.10), normal=0.5)
 MAT['water'] = principled('Water', (0.10, 0.25, 0.30), rough=0.02, **{'Transmission Weight': 0.6, 'IOR': 1.33})
+# tropical modern materials (v7)
+def board_formed(name):
+    """Board-formed concrete: scanned concrete with a faint horizontal board line every 15 cm."""
+    m = pbr(name, 'concrete_floor', 1.8, tint=(0.50, 0.49, 0.46), normal=0.8)
+    nt = m.node_tree; b = nt.nodes['Principled BSDF']
+    geo = nt.nodes.new('ShaderNodeNewGeometry'); sep = nt.nodes.new('ShaderNodeSeparateXYZ')
+    nt.links.new(geo.outputs['Position'], sep.inputs[0])
+    pp = nt.nodes.new('ShaderNodeMath'); pp.operation = 'PINGPONG'; pp.inputs[1].default_value = 0.075
+    nt.links.new(sep.outputs[2], pp.inputs[0])
+    gr = nt.nodes.new('ShaderNodeMath'); gr.operation = 'GREATER_THAN'; gr.inputs[1].default_value = 0.004
+    nt.links.new(pp.outputs[0], gr.inputs[0])
+    nrm = b.inputs['Normal'].links[0].from_socket
+    bump = nt.nodes.new('ShaderNodeBump'); bump.inputs['Strength'].default_value = 0.25
+    nt.links.new(gr.outputs[0], bump.inputs['Height']); nt.links.new(nrm, bump.inputs['Normal'])
+    nt.links.new(bump.outputs['Normal'], b.inputs['Normal'])
+    return m
+
+def laterite(name):
+    """Odisha laterite: porous red-brown blocks (45 x 22 cm) with thin joints."""
+    m = pbr(name, 'clay_plaster', 0.9, tint=(0.40, 0.15, 0.07), normal=1.2, contrast=(0.75, 1.2))
+    nt = m.node_tree; b = nt.nodes['Principled BSDF']
+    geo = nt.nodes.new('ShaderNodeNewGeometry'); sep = nt.nodes.new('ShaderNodeSeparateXYZ')
+    nt.links.new(geo.outputs['Position'], sep.inputs[0])
+    add = nt.nodes.new('ShaderNodeMath'); add.operation = 'ADD'          # x + y runs along any vertical wall
+    nt.links.new(sep.outputs[0], add.inputs[0]); nt.links.new(sep.outputs[1], add.inputs[1])
+    cv = nt.nodes.new('ShaderNodeCombineXYZ')
+    nt.links.new(add.outputs[0], cv.inputs[0]); nt.links.new(sep.outputs[2], cv.inputs[1])
+    br = nt.nodes.new('ShaderNodeTexBrick'); br.offset = 0.5
+    for k, v in {'Scale': 1.0, 'Mortar Size': 0.012, 'Brick Width': 0.45, 'Row Height': 0.22,
+                 'Color1': (1, 1, 1, 1), 'Color2': (0.78, 0.74, 0.72, 1), 'Mortar': (1.4, 1.25, 1.1, 1)}.items():
+        br.inputs[k].default_value = v
+    nt.links.new(cv.outputs[0], br.inputs['Vector'])
+    base = b.inputs['Base Color'].links[0].from_socket
+    mul = nt.nodes.new('ShaderNodeMix'); mul.data_type = 'RGBA'; mul.blend_type = 'MULTIPLY'; mul.inputs[0].default_value = 1.0
+    nt.links.new(base, mul.inputs[6]); nt.links.new(br.outputs['Color'], mul.inputs[7])
+    nt.links.new(mul.outputs[2], b.inputs['Base Color'])
+    nrm = b.inputs['Normal'].links[0].from_socket
+    bump = nt.nodes.new('ShaderNodeBump'); bump.inputs['Strength'].default_value = 0.5; bump.invert = True
+    nt.links.new(br.outputs['Fac'], bump.inputs['Height']); nt.links.new(nrm, bump.inputs['Normal'])
+    nt.links.new(bump.outputs['Normal'], b.inputs['Normal'])
+    return m
+MAT['concrete'] = board_formed('BoardFormedConcrete')
+MAT['laterite'] = laterite('Laterite')
+MAT['render'] = pbr('LimeRender', 'painted_plaster_wall', 2.0, tint=(0.90, 0.89, 0.85), normal=0.3)
+MAT['leaf'] = principled('Leaf', (0.10, 0.22, 0.05), rough=0.7)
+MAT['trunk'] = principled('PalmTrunk', (0.25, 0.20, 0.15), rough=0.9)
 lamp_glow = principled('LampGlow', (1, 0.8, 0.55), **{'Emission Color': (1, 0.75, 0.45, 1), 'Emission Strength': 6.0})
 def floor_mat(hexcol):
     key = 'floor:' + hexcol
@@ -254,7 +300,11 @@ if not os.path.isfile(geom):
     sys.exit(f'Missing {geom} — run: node tools/export_geometry.mjs {DESIGN}')
 for i, d in enumerate(json.load(open(geom))):
     k = d['k']
-    x, y, z = d['p']
+    if d['t'] == 'mesh':                            # prisms, blobs: world-space triangles (feet)
+        v = d['v']; n = len(v) // 3
+        x, y, z = (sum(v[j::3]) / n for j in range(3))
+    else:
+        x, y, z = d['p']
     if hasattr(D, 'skip') and D.skip(k, x, y, z):
         continue
     k = (D.material_for(k, x, y, z) if hasattr(D, 'material_for') else None) or k
@@ -263,6 +313,16 @@ for i, d in enumerate(json.load(open(geom))):
         w, h, dd = d['s']
         bev = 0 if k in ('glass', 'frame') else 0.006
         cube(f'{k}_{i}', P(x, y, z), (w * FT, dd * FT, h * FT), m, bevel=bev)
+    elif d['t'] == 'mesh':
+        v = d['v']
+        me = bpy.data.meshes.new(f'{k}_{i}')
+        me.from_pydata([P(v[j], v[j + 1], v[j + 2]) for j in range(0, len(v), 3)], [],
+                       [(j, j + 1, j + 2) for j in range(0, len(v) // 3, 3)])
+        bm = bmesh.new(); bm.from_mesh(me)
+        bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=1e-4)
+        bmesh.ops.dissolve_limit(bm, angle_limit=0.01, verts=bm.verts, edges=bm.edges)
+        bm.to_mesh(me); bm.free()
+        ob = bpy.data.objects.new(f'{k}_{i}', me); me.materials.append(m); col.objects.link(ob)
     else:
         w, dd = d['s']
         cube(f'{k}_{i}', P(x, y, z), (w * FT, dd * FT, 0.004), m, bevel=0)

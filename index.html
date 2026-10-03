@@ -98,7 +98,7 @@
 <body>
 <div id="loading">Loading designs…</div>
 <div id="bar">
-  <div class="brand"><span>Duplex · 4 BHK</span>Design versions</div>
+  <div class="brand"><span>Duplex · 4 BHK · <a href="https://www.google.com/maps/search/?api=1&amp;query=20.69944,86.13389" target="_blank" rel="noopener" style="color:inherit">Chandikhole, Odisha</a></span>Design versions</div>
   <div id="tabs" role="tablist"></div>
   <div class="seg" role="group" aria-label="View">
     <button id="v3d" class="on">3D</button><button id="vRenders">Renders</button>
@@ -240,15 +240,14 @@ const M = {
   teak: mat(0x8b5a33), stone: mat(0x57534d), terracotta: mat(0xb4623c),
   water: (() => { const m = new THREE.MeshPhysicalMaterial({ color: 0x3f7fa0, transparent: true, opacity: 0.75, roughness: 0.05,
     side: THREE.DoubleSide }); m.clippingPlanes = [clipPlane]; return m; })(),
-  // nordic materials (v7)
-  clad: mat(0x2a2a28, { roughness: 0.9 }), oak: mat(0xd9bf94, { roughness: 0.75 }), render: mat(0xf4f2ed),
-  roof: mat(0x2f3133, { metalness: 0.35, roughness: 0.5 }), birch: mat(0xeeece6), leaf: mat(0x86a35e, { flatShading: true }),
-  leaf2: mat(0x9fb56a, { flatShading: true }), stove: mat(0x1d1d1d, { metalness: 0.3, roughness: 0.6 }),
+  // tropical modern materials (v7): board-formed concrete, Odisha laterite, white lime render, garden
+  concrete: mat(0xaaa6a0, { roughness: 0.92 }), laterite: mat(0x9a5135, { roughness: 0.95 }), render: mat(0xf3f0e9),
+  leaf: mat(0x5f8a3a, { flatShading: true }), trunk: mat(0x7b6a55),
 };
 const MAT_KEY = new Map(Object.entries(M).map(([k, v]) => [v, k]));
 const floorColors = {
   living: 0xe6dfd1, wood: 0xc49a6c, bath: 0xb8c9d3, kitchen: 0xd9c6ae, garage: 0xa9a49a,
-  pooja: 0xf1e3c2, stone: 0xbeb09a, lobby: 0xece6da, theatre: 0x6d5f73, oak: 0xe2cda8, deck: 0xb39673,
+  pooja: 0xf1e3c2, stone: 0xbeb09a, lobby: 0xece6da, theatre: 0x6d5f73,
 };
 
 const house = new THREE.Group(); house.name = 'Duplex'; scene.add(house);
@@ -512,6 +511,7 @@ $('rooms').onchange = () => {
   const nx = Math.abs(x1 - c.x) < Math.abs(x2 - c.x) ? x1 : x2, nz = Math.abs(z1 - c.z) < Math.abs(z2 - c.z) ? z1 : z2;
   const fx = nx === x1 ? x2 : x1, fz = nz === z1 ? z2 : z1;
   let x = cxr + (nx - cxr) * 0.55, z = czr + (nz - czr) * 0.55;
+  if (rm.at) [x, z] = rm.at;                          // design-chosen standing spot (open decks etc.)
   const y = rm.lv ? F : G;
   const tries = [[0, 0], [1.5, 0], [-1.5, 0], [0, 1.5], [0, -1.5], [2.5, 2.5], [-2.5, -2.5], [2.5, -2.5], [-2.5, 2.5], [3.5, 0], [-3.5, 0], [0, 3.5], [0, -3.5]];
   for (const [dx, dz] of tries) if (!blocked(x + dx, z + dz, y)) { x += dx; z += dz; break; }
@@ -593,7 +593,7 @@ function updateWalk(dt) {
 const mm = $('minimap'), mg = mm.getContext('2d');
 const MX0 = -6, MZ0 = -6, MS = 400 / 64;
 const px = x => (x - MX0) * MS, pz = z => (z - MZ0) * MS;
-const fillFor = { living: '#dde6d3', wood: '#ecdcc0', bath: '#d6e0e8', kitchen: '#efd6c8', garage: '#e2ded6', pooja: '#f3e2b3', stone: '#e6dccb', lobby: '#eeeae0', theatre: '#e2dbe6', oak: '#efe2c8', deck: '#dccdb6' };
+const fillFor = { living: '#dde6d3', wood: '#ecdcc0', bath: '#d6e0e8', kitchen: '#efd6c8', garage: '#e2ded6', pooja: '#f3e2b3', stone: '#e6dccb', lobby: '#eeeae0', theatre: '#e2dbe6' };
 function drawMap(level) {
   mg.clearRect(0, 0, mm.width, mm.height);
   mg.fillStyle = '#6f6a60'; mg.fillRect(0, 0, mm.width, pz(-5)); mg.fillRect(0, 0, px(-4), mm.height);
