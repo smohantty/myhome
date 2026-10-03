@@ -88,7 +88,7 @@
       <ul>
         <li><b>Main door in the 4th pada of the south wall</b>, the one auspicious south entry, between the garage and the stair, in a portico recessed into the front with a balcony above it. Nothing is built in the 15′ front open space.</li>
         <li><b>Master bedrooms in the south-west</b> on both floors; the heaviest, tallest mass sits in the SW.</li>
-        <li><b>Stair in the south</b>, rising clockwise, kept out of the centre and the north-east.</li>
+        <li><b>Floating stair in the south</b>: open teak treads, 3 turning steps (winders) instead of a landing so it is 1½′ shorter and the lobby gains the space, 19 steps (an odd count, per Vastu), rising clockwise, out of the centre and the north-east.</li>
         <li><b>Garage in the south-east</b> next to the main road, with an inside door into the foyer.</li>
         <li><b>North-east kept light and low</b>: the pooja is a small room in the true NE corner, on the terrace over the store, kept lower than the main block; the rest of the kitchen and dining roofs stay open terrace. It shares no wall with a toilet and has none above or below it.</li>
         <li><b>Toilets in the west/north-west</b>, none in the NE or the centre. The ground floor has one attached bath and one common bath off the living for guests.</li>
@@ -130,7 +130,7 @@ function plan(id, rooms, extra, openFront = [28.5, 32.5]) {
   T(X(8.8), Y(14.6), '(cut-out)', { fill: css('--muted'), 'font-size': 10 });
 
   for (const r of rooms) {
-    R(r.r[0], r.r[1], r.r[2], r.r[3], { fill: css(r.c), stroke: css('--ink'), 'stroke-width': r.thin ? 0.8 : 1.6, ...(r.dash ? { 'stroke-dasharray': '4 3' } : {}) });
+    R(r.r[0], r.r[1], r.r[2], r.r[3], { fill: css(r.c), stroke: r.nostroke ? 'none' : css('--ink'), 'stroke-width': r.thin ? 0.8 : 1.6, ...(r.dash ? { 'stroke-dasharray': '4 3' } : {}) });
     const cx = X((r.r[0] + r.r[2]) / 2) + (r.dx || 0), cy = Y((r.r[1] + r.r[3]) / 2) + (r.dy || 0);
     const w = r.r[2] - r.r[0], h = r.r[3] - r.r[1];
     const small = Math.min(w, h) < 5.5;
@@ -179,16 +179,18 @@ function windowMark(api, o, a, b, w) {
     el('line', { x1: X(a), y1: Y(b), x2: X(a), y2: Y(b + w), stroke: '#5b8aa0', 'stroke-width': 1.6 }); }
 }
 // dog-leg stair in [32.5,15,39,26]: landing at the south end, flights run north–south; up = clockwise
-function stair(api, label, dz = 0) {
+// floating dog-leg in [32.5,15,39,24.5]: winders by the front wall, flights north–south; up = clockwise
+function stair(api, label) {
   const { el, T } = api;
-  const x0 = 32.5, x1 = 39, y0 = 18.5 + dz, y1 = 26 + dz;
-  for (let y = y0; y <= y1 + 0.01; y += 0.75) el('line', { x1: X(x0), y1: Y(y), x2: X(x1), y2: Y(y), stroke: css('--ink'), 'stroke-width': .6, 'stroke-opacity': .6 });
-  el('line', { x1: X(35.75), y1: Y(y0), x2: X(35.75), y2: Y(y1), stroke: css('--ink'), 'stroke-width': 1.2 });
-  el('line', { x1: X(x0), y1: Y(y0), x2: X(x1), y2: Y(y0), stroke: css('--ink'), 'stroke-width': .9 });
-  // arrow: from the lobby south up the east flight, turn at the landing, north up the west flight (clockwise)
-  el('path', { d: `M${X(34.1)},${Y(25.5 + dz)} L${X(34.1)},${Y(17 + dz)} L${X(37.4)},${Y(17 + dz)} L${X(37.4)},${Y(24.5 + dz)}`, fill: 'none', stroke: css('--accent'), 'stroke-width': 1.3 });
-  el('polygon', { points: `${X(37.4)},${Y(25.3 + dz)} ${X(37.4) - 4},${Y(24.3 + dz)} ${X(37.4) + 4},${Y(24.3 + dz)}`, fill: css('--accent') });
-  T(X(35.75), Y(16.6 + dz) + 3, label, { 'font-size': 9.5, 'font-weight': 600, fill: css('--muted') });
+  const ln = (x1, y1, x2, y2, w = .6, o = .6) => el('line', { x1: X(x1), y1: Y(y1), x2: X(x2), y2: Y(y2), stroke: css('--ink'), 'stroke-width': w, 'stroke-opacity': o });
+  for (let k = 0; k <= 7; k++) ln(32.5, 18 + k * 6.5 / 7, 35.75, 18 + k * 6.5 / 7);     // east flight, 7 treads
+  for (let k = 0; k <= 8; k++) ln(35.75, 18 + k * 6.5 / 8, 39, 18 + k * 6.5 / 8);       // west flight, 8 treads
+  ln(32.5, 16.75, 39, 16.75); ln(35.75, 16.75, 35.75, 18);                               // 3 winders round the turn
+  ln(35.75, 18, 35.75, 24.5, 1.2, 1);                                                    // glass between the flights
+  // arrow: from the lobby south up the east flight, round the winders, north up the west flight (clockwise)
+  el('path', { d: `M${X(34.1)},${Y(24)} L${X(34.1)},${Y(15.9)} L${X(37.4)},${Y(15.9)} L${X(37.4)},${Y(23.2)}`, fill: 'none', stroke: css('--accent'), 'stroke-width': 1.3 });
+  el('polygon', { points: `${X(37.4)},${Y(24)} ${X(37.4) - 4},${Y(23)} ${X(37.4) + 4},${Y(23)}`, fill: css('--accent') });
+  T(X(35.75), Y(19.6), label, { 'font-size': 9.5, 'font-weight': 600, fill: css('--muted') });
 }
 
 // ---------- GROUND FLOOR ----------
@@ -196,8 +198,9 @@ plan('gf', [
   { r: [28.5, 15, 32.5, 20], c: '--outdoor', l: 'PORTICO', n: '4×5', rot: true },
   { r: [18, 15, 28.5, 33], c: '--garage', l: 'GARAGE', n: '10½′ × 18′' },
   { r: [28.5, 20, 32.5, 26], c: '--circ', l: 'FOYER', n: '4×6', rot: true },
-  { r: [32.5, 15, 39, 26], c: '--stair', l: '' },
+  { r: [32.5, 15, 39, 24.5], c: '--stair', l: '' },
   { r: [28.5, 26, 45.5, 44], c: '--living', l: 'LIVING', n: '17′ × 16½′ · open to dining', thin: true, dy: 18 },
+  { r: [32.5, 24.5, 39, 26.2], c: '--living', l: '', thin: true, nostroke: true },
   { r: [39, 15, 51, 27.5], c: '--bed', l: 'BEDROOM 1 · SW', n: '12′ × 12½′' },
   { r: [45.5, 27.5, 51, 35.5], c: '--wet', l: 'ATTACHED', n: '5½′ × 8′', rot: true, dy: 10 },
   { r: [45.5, 35.5, 51, 44], c: '--wet', l: 'COMMON', n: '5½′ × 8½′', rot: true, dy: -10 },
@@ -245,12 +248,13 @@ plan('ff', [
   { r: [18, 15, 28.5, 26], c: '--bed', l: 'BEDROOM 3', n: '10½′ × 11′' },
   { r: [18, 26, 23, 33], c: '--wet', l: 'BATH', n: '5×7', rot: true },
   { r: [28.5, 20, 32.5, 26], c: '--circ', l: 'GALLERY', n: '4×6', rot: true },
-  { r: [32.5, 15, 39, 26], c: '--stair', l: '' },
+  { r: [32.5, 15, 39, 24.5], c: '--stair', l: '' },
   { r: [39, 15, 51, 26], c: '--bed', l: 'MASTER · SW', n: '12′ × 11′' },
   { r: [42.5, 26, 46.5, 33], c: '--circ', l: 'DRESS', n: '4×7', rot: true },
   { r: [46.5, 26, 51, 33], c: '--wet', l: 'BATH', n: '4½×7', rot: true },
   { r: [23, 26, 42.5, 33], c: '--living', l: 'FAMILY LOUNGE', n: '19½′ × 7′', thin: true },
   { r: [28.5, 33, 39, 38], c: '--living', l: 'LOUNGE', n: 'TV / reading', thin: true },
+  { r: [32.5, 24.5, 39, 26.2], c: '--living', l: '', thin: true, nostroke: true },
   { r: [28.5, 38, 33, 44], c: '--living', l: 'LOUNGE', n: 'reading', thin: true },
   { r: [33, 38, 39, 44], c: '--wet', l: 'BATH', n: '6′ × 6′' },
   { r: [39, 33, 51, 44], c: '--bed', l: 'BEDROOM 4 · NW', n: '12′ × 11′' },

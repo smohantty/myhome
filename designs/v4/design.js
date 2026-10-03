@@ -4,7 +4,7 @@
    S4 pada main door in a 4'×5' portico recessed into the front (balcony above, also recessed — nothing is
    built in the 15' front open space; V5 widens it to 10½' by moving the stair to the centre).
    Garage SE · one SW bedroom down with an attached bath + a common bath · kitchen, store and utility in the
-   east wing (hob in the kitchen's SE, cook faces east) · dog-leg stair in the south climbing clockwise · master SW, bedrooms 3 and 4 up · pooja in the
+   east wing (hob in the kitchen's SE, cook faces east) · floating dog-leg stair with winders in the south, climbing clockwise · master SW, bedrooms 3 and 4 up · pooja in the
    true NE corner on the terrace over the store; the rest of the NE stays open terrace.
    Units/axes as v1: feet, +x = WEST, +z = NORTH, origin = SE corner of the plot. */
 registerDesign({
@@ -21,11 +21,11 @@ registerDesign({
     { n: 'Portico', lv: 0, r: [28.5, 32.5, 15, 20], f: 'stone', d: "recessed · 4'×5' · S4 main door" },
     { n: 'Garage', lv: 0, r: [18, 28.5, 15, 33], f: 'garage', d: "10½'×18' · SE" },
     { n: 'Foyer', lv: 0, r: [28.5, 32.5, 20, 26], f: 'stone', d: 'shoe + coat wall' },
-    { n: 'Stair', lv: 0, r: [32.5, 39, 15, 26], f: 'lobby', noFloor: true, noLabel: true },
+    { n: 'Stair', lv: 0, r: [32.5, 39, 15, 24.5], f: 'lobby', noFloor: true, noLabel: true },
     { n: 'Bedroom 1', lv: 0, r: [39, 51, 15, 27.5], f: 'wood', d: "12'×12½' · SW · parents" },
     { n: 'Attached bath', lv: 0, r: [45.5, 51, 27.5, 35.5], f: 'bath', noLabel: true },
     { n: 'Common bath', lv: 0, r: [45.5, 51, 35.5, 44], f: 'bath', d: 'guests' },
-    { n: 'Living', lv: 0, r: [28.5, 39, 26, 44], f: 'living', d: "17'×16½' · open to dining", extra: [[39, 45.5, 27.5, 44]] },
+    { n: 'Living', lv: 0, r: [28.5, 39, 26, 44], f: 'living', d: "17'×16½' · open to dining", extra: [[39, 45.5, 27.5, 44], [32.5, 39, 24.5, 26]] },
     { n: 'Dining', lv: 0, r: [18, 28.5, 33, 44], f: 'living', d: "10½'×11'" },
     { n: 'Kitchen', lv: 0, r: [4, 18, 23, 36], f: 'kitchen', d: "14'×13' · E wing · cook faces east" },
     { n: 'Store', lv: 0, r: [4, 11, 36, 44], f: 'garage', d: 'pantry · keep light' },
@@ -38,13 +38,13 @@ registerDesign({
     { n: 'Master bedroom', lv: 1, r: [39, 51, 15, 26], f: 'wood', d: "12'×11' · SW" },
     { n: 'Dress', lv: 1, r: [42.5, 46.5, 26, 33], f: 'wood', noLabel: true },
     { n: 'Master bath', lv: 1, r: [46.5, 51, 26, 33], f: 'bath', noLabel: true },
-    { n: 'Family lounge', lv: 1, r: [23, 42.5, 26, 33], f: 'lobby', d: 'TV + reading', extra: [[28.5, 39, 33, 38], [28.5, 33, 38, 44]] },
+    { n: 'Family lounge', lv: 1, r: [23, 42.5, 26, 33], f: 'lobby', d: 'TV + reading', extra: [[28.5, 39, 33, 38], [28.5, 33, 38, 44], [32.5, 39, 24.5, 26]] },
     { n: 'Bath 4', lv: 1, r: [33, 39, 38, 44], f: 'bath', noLabel: true },
     { n: 'Bedroom 4', lv: 1, r: [39, 51, 33, 44], f: 'wood', d: "12'×11' · NW" },
     { n: 'Terrace', lv: 1, r: [4, 18, 23, 38], f: 'stone', d: 'over the kitchen + dining · NE kept open', extra: [[9, 18, 38, 44], [18, 28.5, 33, 44]] },
     { n: 'Pooja', lv: 1, r: [4, 9, 38, 44], f: 'pooja', d: 'true NE corner' },
   ],
-  minimap: { stair: [[34.1, 25.5], [34.1, 17], [37.4, 17], [37.4, 25.5]] },
+  minimap: { stair: [[34.1, 24], [34.1, 16.5], [37.4, 16.5], [37.4, 24]] },
 
   build(h) {
     const { G, F, R, RT, EXT, INT, M, box, wall, door, win, tall, slide, railing } = h;
@@ -59,7 +59,7 @@ registerDesign({
     // ================= slabs
     box(18, 51, 0, G, 15, 44, M.plinth);
     box(4, 18, 0, G, 23, 44, M.plinth);
-    for (const [x1, x2, z1, z2] of [[18, 32.5, 15, 44], [32.5, 39, 26, 44], [39, 51, 15, 44], [4, 18, 23, 44]])
+    for (const [x1, x2, z1, z2] of [[18, 32.5, 15, 44], [32.5, 39, 24.5, 44], [39, 51, 15, 44], [4, 18, 23, 44]])
       box(x1, x2, F - 0.5, F, z1, z2, M.slab);                           // first floor, minus the stair hole; portico roof = balcony
     box(18, 51, R, RT, 15, 33, M.slab); box(28.5, 51, R, RT, 33, 44, M.slab);   // main roof
     box(3.6, 9.4, PJ, PJ + 0.4, 37.6, 44.4, M.slab);                     // pooja roof
@@ -70,7 +70,7 @@ registerDesign({
 
     // ================= exterior walls
     // south (front): garage | main door (S4 pada) | stair | bedroom 1
-    wall('x', 15, 18, 51, 0, F, EXT, [{ a: 18.6, b: 27.9, s: 0, h: 8.5, kind: 'open' }, { a: 28.5, b: 32.5, s: 0, h: F - 0.9, kind: 'open' }, win(41.5, 48.5)], M.extWall);
+    wall('x', 15, 18, 51, 0, F, EXT, [{ a: 18.6, b: 27.9, s: 0, h: 8.5, kind: 'open' }, { a: 28.5, b: 32.5, s: 0, h: F - 0.9, kind: 'open' }, win(33.5, 38, G, 4, 8.5), win(41.5, 48.5)], M.extWall);
     box(18.6, 27.9, G, 8.5, 14.45, 14.6, M.shutter);                     // garage shutter (closed)
     wall('x', 15, 18, 51, F, RT, EXT, [win(20, 27, F), { a: 28.5, b: 32.5, s: F, h: R - 0.4, kind: 'open' }, tall(33.5, 38, F + 1, F + 8.5), win(41.5, 48.5, F)], M.extWall);
     // portico back wall with the main door (still in the S4 pada line), stone side walls
@@ -115,7 +115,7 @@ registerDesign({
     wall('z', 18, 23, 44, g0, g1, INT, [{ a: 33, b: 36, s: g0, h: G + 7.5, kind: 'open' }, door(37, 39.8)]);   // garage | kitchen, dining | kitchen + utility
     wall('z', 28.5, 15, 38, g0, g1, INT, [door(21.5, 24.5)]);            // garage | foyer, lobby; TV wall partition to the dining
     wall('x', 33, 18, 28.5, g0, g1, INT);                                // garage | dining
-    wall('z', 32.5, 15, 26, g0, g1, INT, [], M.extWall);                  // portico, foyer | stair
+    wall('z', 32.5, 15, 24.5, g0, g1, INT, [], M.extWall);                // portico, foyer | stair
     wall('z', 39, 15, 27.5, g0, g1, INT);                                // stair | bedroom 1
     wall('x', 27.5, 39, 51, g0, g1, INT, [door(39.5, 42.5), door(46.75, 49.25)]);   // bedroom 1 | living, attached bath
     wall('z', 45.5, 27.5, 44, g0, g1, INT, [door(41.2, 43.7)]);          // living | baths
@@ -123,15 +123,20 @@ registerDesign({
     wall('x', 36, 4, 18, g0, g1, INT, [door(6.5, 9)]);                   // kitchen | store, utility
     wall('z', 11, 36, 44, g0, g1, INT);
 
-    // ================= dog-leg stair in the south, climbing clockwise (18 risers)
-    // from the lobby south up the east flight, turn on the landing by the front wall, north up the west flight
-    const RISE = (F - G) / 18, T = 7.5 / 8;
-    for (let i = 0; i < 8; i++) box(32.5, 35.75, G, G + (i + 1) * RISE, 26 - (i + 1) * T, 26 - i * T, M.tread);
-    box(32.5, 39, G, G + 9 * RISE, 15, 18.5, M.tread);                                                       // landing
-    for (let i = 0; i < 8; i++) box(35.75, 39, G, G + (10 + i) * RISE, 18.5 + i * T, 18.5 + (i + 1) * T, M.tread);
-    box(35.65, 35.85, G, F - 1, 18.5, 26, M.wall);
-    railing('x', 26, 32.5, 35.75, F);                                    // stair well, first floor
-    railing('z', 32.5, 20, 26, F);
+    // ================= floating dog-leg stair in the south, climbing clockwise
+    // open risers (thin teak treads), winders in place of a landing (stair is 1½' shorter, the lobby gains it),
+    // 19 risers — an odd count, per Vastu. From the lobby south up the east flight, round the winders by the
+    // front wall, north up the west flight.
+    const RISE = (F - G) / 19, T1 = 6.5 / 7, T2 = 6.5 / 8, TH = 0.2;
+    const tread = (x1, x2, z1, z2, k) => box(x1, x2, G + k * RISE - TH, G + k * RISE, z1, z2, M.tread);
+    for (let k = 1; k <= 7; k++) tread(32.5, 35.75, 24.5 - k * T1, 24.5 - (k - 1) * T1, k);        // east flight
+    tread(32.5, 35.75, 16.75, 18, 8); tread(32.5, 39, 15, 16.75, 9); tread(35.75, 39, 16.75, 18, 10);   // winders
+    for (let k = 11; k <= 18; k++) tread(35.75, 39, 18 + (k - 11) * T2, 18 + (k - 10) * T2, k);     // west flight
+    box(35.7, 35.8, G, F - 1, 18, 24.5, M.glass);                                                    // glass between the flights
+    box(35.65, 35.85, F - 1.15, F - 1, 18, 24.5, M.rail, nc);
+    box(36.4, 38.6, G, G + 1.2, 19.2, 22.5, M.stone); box(37, 38, G + 1.2, G + 3.2, 20.3, 21.4, M.fabric, nc);   // planter under the stair
+    railing('x', 24.5, 32.5, 35.75, F);                                  // stair well, first floor
+    railing('z', 32.5, 20, 24.5, F);
 
     // ================= first floor interior
     const f0 = F, f1 = R;
