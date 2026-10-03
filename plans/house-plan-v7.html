@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>House plan V7</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f5f1ea; --ink: #2b2925; --muted: #6b665e; --rule: #ddd6ca; --accent: #b4623c;
+    --bed: #ead9bf; --wet: #d5e2e4; --living: #f1e6d1; --kitchen: #f0d6c2; --garage: #dcd7cf;
+    --circ: #f6efe3; --stair: #e4ddd1; --outdoor: #dfe6d3; --pooja: #f3d9a4; --sauna: #e6cfa6; --void: #fbf8f2;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.5 'IBM Plex Sans', system-ui, sans-serif; }
+  .sheet { width: 1600px; padding: 30px 40px 36px; }
+  header { display: flex; justify-content: space-between; align-items: end; margin-bottom: 8px; }
+  .eyebrow { color: var(--accent); letter-spacing: .14em; font-size: 12px; font-weight: 600; }
+  h1 { font-family: 'Fraunces', serif; font-size: 40px; margin: 2px 0 0; line-height: 1.1; }
+  .sub { color: var(--muted); margin: 4px 0 0; }
+  .totals { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
+  .totals b { color: var(--ink); }
+  .plans { display: flex; gap: 20px; }
+  .plans figure { margin: 0; flex: 1; }
+  figcaption { font-size: 12px; letter-spacing: .14em; font-weight: 600; color: var(--muted); margin: 6px 0 0 6px; }
+  svg text { font-family: 'IBM Plex Sans', sans-serif; }
+  .notes { display: grid; grid-template-columns: 1.15fr 1fr 1fr; gap: 32px; margin-top: 14px; }
+  h2 { font-size: 12px; letter-spacing: .14em; color: var(--muted); margin: 0 0 6px; font-weight: 600; }
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 13px; }
+  td { padding: 3.5px 0; border-bottom: 1px solid var(--rule); }
+  td:last-child { text-align: right; white-space: nowrap; padding-left: 10px; color: var(--muted); }
+  ul { margin: 0; padding-left: 18px; font-size: 13px; }
+  li { margin: 0 0 5px; }
+  .legend { display: flex; gap: 18px; font-size: 12px; margin: 4px 0 0 6px; flex-wrap: wrap; }
+  .sw { display: inline-block; width: 12px; height: 10px; border: 1px solid #0003; margin-right: 5px; vertical-align: -1px; }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <header>
+    <div>
+      <div class="eyebrow">DUPLEX · 4 BHK · NORDIC · NO VASTU OR ROOM CONSTRAINTS · ON SITE PLAN V2 · VIEWER TAB V7</div>
+      <h1>House plan V7 · Nordic gable</h1>
+      <p class="sub">One black Scandinavian gable with its glass end facing the mountains, over a double-height great room; a white rendered east wing with a sauna below and a sky deck above.</p>
+    </div>
+    <div class="totals">Ground floor <b>1,251 sq ft</b> · First floor <b>≈ 840 sq ft</b> + 98 sq ft deck<br>
+      4 bedrooms (1 down, 3 up) · 4 baths + WC · sauna · ridge ≈ 32½′</div>
+  </header>
+
+  <div class="plans">
+    <figure><svg id="gf" width="760" height="560" viewBox="0 0 760 560"></svg><figcaption>GROUND FLOOR · GUEST BEDROOM + SAUNA</figcaption></figure>
+    <figure><svg id="ff" width="760" height="560" viewBox="0 0 760 560"></svg><figcaption>FIRST FLOOR · 3 BEDROOMS, VAULTED TO THE ROOF</figcaption></figure>
+  </div>
+  <div class="legend">
+    <span><i class="sw" style="background:var(--bed)"></i>Bedroom</span>
+    <span><i class="sw" style="background:var(--living)"></i>Living / dining / study</span>
+    <span><i class="sw" style="background:var(--kitchen)"></i>Kitchen</span>
+    <span><i class="sw" style="background:var(--wet)"></i>Bath / laundry</span>
+    <span><i class="sw" style="background:var(--sauna)"></i>Sauna</span>
+    <span><i class="sw" style="background:var(--outdoor)"></i>Deck</span>
+    <span><i class="sw" style="background:var(--void);border-style:dashed"></i>Open to below</span>
+    <span style="color:var(--muted)">North points down (road on top), as on the site plan · all sizes are clear inside sizes in feet, walls not deducted</span>
+  </div>
+
+  <div class="notes">
+    <div>
+      <h2>ROOM SCHEDULE</h2>
+      <table>
+        <tr><td>Entry with a freestanding oak coat wall</td><td>8′ × 6′</td></tr>
+        <tr><td>Great room, open to the ridge (≈ 31′), glass gable + wood stove</td><td>21′ × 14½′ incl. stair</td></tr>
+        <tr><td>Snug under the master, window seat on the front</td><td>12′ × 14½′</td></tr>
+        <tr><td>Kitchen with island, open to the great room</td><td>12′ × 14½′</td></tr>
+        <tr><td>Dining, table for 8 under paper pendants</td><td>12′ × 14½′</td></tr>
+        <tr><td>Library (books floor to ceiling, daybed) + WC</td><td>9′ × 10′ · 5′ × 4½′</td></tr>
+        <tr><td>Boot room + laundry, side door to the side road</td><td>14′ × 7′</td></tr>
+        <tr><td>Guest bedroom + bath + cedar sauna</td><td>9′ × 14′ · 5′ × 4½′ · 5′ × 3½′</td></tr>
+        <tr><td>Master bedroom (vaulted, mountain view) + dressing + bath with tub</td><td>12′ × 15′ · 12′ × 4′ · 12′ × 10′</td></tr>
+        <tr><td>Bedroom 2 (vaulted) · bath 2 · study nook</td><td>11′ × 10′ · 5′ × 10′ · 5′ × 10′</td></tr>
+        <tr><td>Bedroom 3 in the wing, onto the sky deck · bath 3</td><td>9′ × 14′ · 5′ × 8′</td></tr>
+        <tr><td>Gallery over the great room, reading bench</td><td>17½′ × 4½′</td></tr>
+        <tr><td>Sky deck: hot tub under an oak pergola</td><td>14′ × 7′</td></tr>
+      </table>
+    </div>
+    <div>
+      <h2>THE IDEA</h2>
+      <ul>
+        <li><b>One bold gable.</b> A 38° standing-seam roof with its ridge running north–south, so the gable end faces the road and the mountains. Black timber outside, oak lining inside, white render on the wing: the classic Nordic dark-house / white-box pair.</li>
+        <li><b>A glass gable over a double-height great room.</b> From the floor to the ridge, 20½′ wide. Sit by the stove and the mountains fill the wall; the gallery and the master both look out through the same glass.</li>
+        <li><b>Floating oak stair</b> in one straight run up the blank east wall (17 risers of 7″), behind a full-height oak slat screen that doubles as the gallery balustrade.</li>
+        <li><b>Calm plan:</b> a spine wall splits the view side (great room, snug) from the working side (kitchen, dining, library). Upstairs every room is vaulted to the roof.</li>
+        <li><b>The wing is the spa:</b> boot room and side door, guest suite, cedar sauna; above it a bedroom that opens onto a hot-tub deck under a pergola.</li>
+      </ul>
+    </div>
+    <div>
+      <h2>HONEST TRADE-OFFS</h2>
+      <ul>
+        <li><b>Vastu set aside</b>, as briefed: the door is in the south-east half, the stair on the east, the sauna and baths in the north-east. V4–V6 remain the Vastu options.</li>
+        <li><b>South glass + Indian sun:</b> use low-e double glazing; the 1½′ roof overhang and the birches shade it, and add external screens or blinds for May–June afternoons.</li>
+        <li>The void costs ≈ 305 sq ft of first-floor area, which is why there are 3 bedrooms upstairs, not 4.</li>
+        <li>Ridge ≈ 32½′: check the local height limit for G+1. The roof void above the eaves is not usable floor.</li>
+        <li>The wood stove can be a gas or bio-ethanol stove with the same black flue if solid fuel isn't wanted.</li>
+      </ul>
+      <p style="font-size:12px;color:var(--muted);margin:8px 0 0">Concept plan. Have a local architect check structure, bye-law setbacks, heights and stair headroom before drawings.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+const S = 12, OX = 55, OY = -5;
+const X = f => OX + (f - 4) * S + 40, Y = f => OY + f * S;
+const NS = 'http://www.w3.org/2000/svg';
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+
+function plan(id, rooms, extra, openFront = [28.5, 32.5]) {
+  const svg = document.getElementById(id);
+  const el = (tag, a, t) => { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); if (t != null) e.textContent = t; svg.appendChild(e); return e; };
+  const R = (x0, y0, x1, y1, a) => el('rect', { x: X(x0), y: Y(y0), width: (x1 - x0) * S, height: (y1 - y0) * S, ...a });
+  const T = (x, y, s, a = {}) => el('text', { x, y, 'text-anchor': 'middle', 'font-size': 11, fill: css('--ink'), ...a }, s);
+  const api = { el, R, T, svg };
+
+  // road + plot
+  R(4, 1.2, 52.5, 4.6, { fill: '#6f6a62' });
+  T(X(28), Y(3.3), 'MAIN ROAD · SOUTH · FRONT', { fill: '#fff', 'font-size': 10, 'font-weight': 600, 'letter-spacing': '.08em' });
+  el('polygon', { points: [[17, 5], [52, 5], [52, 45], [0.6, 45], [0.6, 22], [17, 22]].map(([x, y]) => `${X(x)},${Y(y)}`).join(' '),
+    fill: 'none', stroke: css('--accent'), 'stroke-width': 1.2, 'stroke-dasharray': '6 4' });
+  R(0.6, 5, 17, 22, { fill: '#e7e2d9' });
+  T(X(8.8), Y(13.5), 'neighbour', { fill: css('--muted'), 'font-size': 10 });
+  T(X(8.8), Y(14.6), '(cut-out)', { fill: css('--muted'), 'font-size': 10 });
+
+  for (const r of rooms) {
+    R(r.r[0], r.r[1], r.r[2], r.r[3], { fill: css(r.c), stroke: r.nostroke ? 'none' : css('--ink'), 'stroke-width': r.thin ? 0.8 : 1.6, ...(r.dash ? { 'stroke-dasharray': '4 3' } : {}) });
+    const cx = X((r.r[0] + r.r[2]) / 2) + (r.dx || 0), cy = Y((r.r[1] + r.r[3]) / 2) + (r.dy || 0);
+    const w = r.r[2] - r.r[0], h = r.r[3] - r.r[1];
+    const small = Math.min(w, h) < 5.5;
+    T(cx, cy - (r.n ? 2 : -4), r.l, { 'font-size': small ? 9.5 : 11.5, 'font-weight': 600, ...(r.rot ? { transform: `rotate(-90 ${cx} ${cy})` } : {}) });
+    if (r.n) T(cx, cy + 11, r.n, { 'font-size': small ? 9 : 10.5, fill: css('--muted'), ...(r.rot ? { transform: `rotate(-90 ${cx} ${cy})` } : {}) });
+  }
+  extra(api);
+
+  // outer wall of the construction area
+  el('polygon', { points: [[18, 15], [51, 15], [51, 44], [4, 44], [4, 23], [18, 23]].map(([x, y]) => `${X(x)},${Y(y)}`).join(' '),
+    fill: 'none', stroke: css('--ink'), 'stroke-width': 3.5 });
+  if (openFront) {                                    // open stretch of the front wall (recessed portico / carport)
+    const [a, b] = openFront;
+    el('line', { x1: X(a) + 2, y1: Y(15), x2: X(b) - 2, y2: Y(15), stroke: '#fbf8f2', 'stroke-width': 5 });
+    el('line', { x1: X(a), y1: Y(15), x2: X(b), y2: Y(15), stroke: css('--ink'), 'stroke-width': 1, 'stroke-dasharray': '3 3' });
+  }
+  // compass
+  const cx = X(1.5), cy = Y(39.5);
+  T(cx, cy - 14, 'S', { 'font-weight': 600, 'font-size': 10 });
+  el('polygon', { points: `${cx},${cy + 9} ${cx - 4},${cy - 6} ${cx + 4},${cy - 6}`, fill: css('--accent') });
+  T(cx, cy + 22, 'N', { 'font-weight': 600, 'font-size': 10, fill: css('--accent') });
+  return api;
+}
+
+// door: on a horizontal wall (y fixed) from x..x+w, or vertical wall (x fixed) from y..y+w; swing side +1/-1
+function door(api, o, a, b, w, side = 1) {
+  const { el } = api, bg = css('--bg');
+  if (o === 'h') {
+    el('line', { x1: X(a), y1: Y(b), x2: X(a + w), y2: Y(b), stroke: '#fbf8f2', 'stroke-width': 4 });
+    el('path', { d: `M${X(a)},${Y(b)} L${X(a)},${Y(b + side * w)} A${w * S},${w * S} 0 0 ${side > 0 ? 0 : 1} ${X(a + w)},${Y(b)}`, fill: 'none', stroke: css('--accent'), 'stroke-width': .9 });
+  } else {
+    el('line', { x1: X(a), y1: Y(b), x2: X(a), y2: Y(b + w), stroke: '#fbf8f2', 'stroke-width': 4 });
+    el('path', { d: `M${X(a)},${Y(b)} L${X(a + side * w)},${Y(b)} A${w * S},${w * S} 0 0 ${side > 0 ? 1 : 0} ${X(a)},${Y(b + w)}`, fill: 'none', stroke: css('--accent'), 'stroke-width': .9 });
+  }
+}
+function opening(api, o, a, b, w) {   // doorless opening
+  const { el } = api;
+  if (o === 'h') el('line', { x1: X(a), y1: Y(b), x2: X(a + w), y2: Y(b), stroke: '#fbf8f2', 'stroke-width': 4 });
+  else el('line', { x1: X(a), y1: Y(b), x2: X(a), y2: Y(b + w), stroke: '#fbf8f2', 'stroke-width': 4 });
+}
+function windowMark(api, o, a, b, w) {
+  const { el } = api;
+  if (o === 'h') { el('line', { x1: X(a), y1: Y(b), x2: X(a + w), y2: Y(b), stroke: '#fbf8f2', 'stroke-width': 4 });
+    el('line', { x1: X(a), y1: Y(b), x2: X(a + w), y2: Y(b), stroke: '#5b8aa0', 'stroke-width': 1.6 }); }
+  else { el('line', { x1: X(a), y1: Y(b), x2: X(a), y2: Y(b + w), stroke: '#fbf8f2', 'stroke-width': 4 });
+    el('line', { x1: X(a), y1: Y(b), x2: X(a), y2: Y(b + w), stroke: '#5b8aa0', 'stroke-width': 1.6 }); }
+}
+// straight floating stair along the east wall: foot by the front door (z 17.9), up north to the landing (z 31.5)
+function stair(api, label) {
+  const { el, T } = api;
+  const ln = (x1, y1, x2, y2, w = .6, o = .6, d) => el('line', { x1: X(x1), y1: Y(y1), x2: X(x2), y2: Y(y2), stroke: css('--ink'), 'stroke-width': w, 'stroke-opacity': o, ...(d ? { 'stroke-dasharray': d } : {}) });
+  for (let k = 0; k <= 16; k++) ln(18.4, 17.9 + k * .85, 21.5, 17.9 + k * .85);
+  ln(21.6, 18.4, 21.6, 29.5, 1.6, .9, '1.5 2');                                             // oak slat screen
+  el('path', { d: `M${X(19.95)},${Y(18.4)} L${X(19.95)},${Y(30.4)}`, fill: 'none', stroke: css('--accent'), 'stroke-width': 1.3 });
+  el('polygon', { points: `${X(19.95)},${Y(31.2)} ${X(19.95) - 4},${Y(30.2)} ${X(19.95) + 4},${Y(30.2)}`, fill: css('--accent') });
+  T(X(19.95), Y(24.6), label, { 'font-size': 9.5, 'font-weight': 600, fill: css('--muted'), transform: `rotate(-90 ${X(19.95)} ${Y(24.6)})` });
+}
+
+// ---------- GROUND FLOOR ----------
+plan('gf', [
+  { r: [26.4, 9.6, 51.6, 14.6], c: '--outdoor', l: 'OAK DECK', n: 'facing the mountains', thin: true, dash: true },
+  { r: [18, 15, 26.4, 21], c: '--circ', l: 'ENTRY', n: '8′ × 6′', dx: 14 },
+  { r: [26.4, 15, 39, 29.5], c: '--living', l: 'GREAT ROOM', n: 'open to the ridge', thin: true },
+  { r: [21.5, 21, 26.4, 29.5], c: '--living', l: '', thin: true, nostroke: true },
+  { r: [39, 15, 51, 29.5], c: '--living', l: 'SNUG', n: '12′ × 14½′', thin: true },
+  { r: [18, 29.5, 30, 44], c: '--kitchen', l: 'KITCHEN', n: '12′ × 14½′', dx: 18, dy: -50 },
+  { r: [30, 29.5, 42, 44], c: '--living', l: 'DINING', n: '12′ × 14½′', thin: true, dy: -50 },
+  { r: [42, 29.5, 46, 34], c: '--circ', l: '', thin: true },
+  { r: [46, 29.5, 51, 34], c: '--wet', l: 'WC', n: '' },
+  { r: [42, 34, 51, 44], c: '--living', l: 'LIBRARY', n: '9′ × 10′' },
+  { r: [4, 23, 18, 30], c: '--wet', l: 'BOOT ROOM', n: 'laundry · 14′ × 7′' },
+  { r: [13, 30, 18, 36], c: '--circ', l: 'HALL', n: '', thin: true },
+  { r: [4, 30, 13, 44], c: '--bed', l: 'GUEST', n: '9′ × 14′' },
+  { r: [13, 36, 18, 40.5], c: '--wet', l: 'BATH', n: '' },
+  { r: [13, 40.5, 18, 44], c: '--sauna', l: 'SAUNA', n: '' },
+  { r: [18, 17.9, 21.5, 31.5], c: '--stair', l: '', thin: true },
+], api => {
+  const { el, T, R } = api;
+  stair(api, 'UP · 17');
+  door(api, 'h', 22.3, 15, 3.5, 1);
+  T(X(24), Y(7.5), 'FRONT DOOR', { 'font-size': 9, 'font-weight': 600, fill: css('--accent') });
+  T(X(24), Y(8.5), 'oak canopy', { 'font-size': 8.5, fill: css('--muted') });
+  T(X(20.3), Y(11), 'CAR', { 'font-size': 10, 'font-weight': 600, fill: '#4d5a40' });
+  T(X(20.3), Y(12.1), 'apron', { 'font-size': 9, fill: '#4d5a40' });
+  T(X(38), Y(7.4), 'FRONT GARDEN · BIRCHES', { 'font-size': 10, 'font-weight': 600, fill: '#4d5a40' });
+  R(26.4, 17, 27, 21, { fill: '#b9925d' });                                     // oak coat wall
+  R(31, 26.6, 34, 29.1, { fill: '#57534d' }); T(X(32.5), Y(26.2), 'stove', { 'font-size': 9, fill: css('--muted') });
+  R(41, 15.4, 49, 17.3, { fill: '#e7d5b5', stroke: css('--ink'), 'stroke-width': .5 });  T(X(45), Y(18.6), 'window seat', { 'font-size': 9, fill: css('--muted') });
+  R(22, 35.5, 28.5, 38.3, { fill: '#fff', stroke: css('--ink'), 'stroke-width': .6 }); T(X(25.25), Y(37.3), 'island', { 'font-size': 9, fill: css('--muted') });
+  R(32.3, 35.3, 39.7, 39.2, { fill: '#e2cda8', stroke: css('--ink'), 'stroke-width': .6 });
+  opening(api, 'h', 22, 29.5, 7.6); opening(api, 'h', 31, 29.5, 10.4);            // spine openings
+  door(api, 'h', 42.5, 29.5, 3, 1);                  // snug → lobby
+  door(api, 'v', 46, 30.3, 2.5, 1);                  // WC
+  door(api, 'h', 43, 34, 2.5, 1);                    // library
+  door(api, 'v', 18, 32, 2.5, -1);                   // kitchen → wing
+  opening(api, 'h', 13.5, 30, 4);                    // boot room → hall
+  door(api, 'v', 13, 31, 2.5, -1);                   // guest
+  door(api, 'h', 14, 36, 2.5, 1);                    // guest bath
+  door(api, 'h', 14, 40.5, 2.5, 1);                  // sauna (glass)
+  door(api, 'v', 4, 25, 3, 1);                       // side door
+  T(X(2.2), Y(26.5) - 2, 'side door', { 'font-size': 8.5, fill: css('--accent'), transform: `rotate(-90 ${X(2.2)} ${Y(26.5)})` });
+  windowMark(api, 'h', 18.6, 15, 3.2); windowMark(api, 'h', 26.3, 15, 12.7); windowMark(api, 'h', 41, 15, 8);
+  windowMark(api, 'v', 51, 18, 9); windowMark(api, 'v', 51, 31, 2); windowMark(api, 'v', 51, 36, 6);
+  windowMark(api, 'h', 20.5, 44, 8); windowMark(api, 'h', 32, 44, 8); windowMark(api, 'h', 44, 44, 5);
+  windowMark(api, 'h', 6, 23, 6); windowMark(api, 'v', 4, 35, 7); windowMark(api, 'h', 6, 44, 5); windowMark(api, 'h', 14, 44, 2.5);
+}, null);
+
+// ---------- FIRST FLOOR ----------
+plan('ff', [
+  { r: [18, 15, 39, 29.5], c: '--void', l: 'OPEN TO BELOW', n: 'great room · glass gable to the ridge', thin: true, dash: true, dx: 30 },
+  { r: [21.5, 29.5, 39, 34], c: '--circ', l: 'GALLERY', n: '', thin: true },
+  { r: [18, 31.5, 21.5, 34], c: '--circ', l: '', thin: true, nostroke: true },
+  { r: [39, 15, 51, 30], c: '--bed', l: 'MASTER', n: '12′ × 15′ · vaulted' },
+  { r: [39, 30, 51, 34], c: '--circ', l: 'DRESSING', n: '' },
+  { r: [39, 34, 51, 44], c: '--wet', l: 'MASTER BATH', n: '12′ × 10′' },
+  { r: [18, 34, 29, 44], c: '--bed', l: 'BEDROOM 2', n: '11′ × 10′' },
+  { r: [29, 34, 34, 44], c: '--wet', l: 'BATH', n: '5×10', rot: true },
+  { r: [34, 34, 39, 44], c: '--living', l: 'STUDY', n: '5×10', rot: true },
+  { r: [4, 23, 18, 30], c: '--outdoor', l: 'SKY DECK', n: 'hot tub · pergola', dash: true, thin: true, dx: -38 },
+  { r: [4, 30, 13, 44], c: '--bed', l: 'BEDROOM 3', n: '9′ × 14′' },
+  { r: [13, 30, 18, 36], c: '--circ', l: '', thin: true },
+  { r: [13, 36, 18, 44], c: '--wet', l: 'BATH', n: '5×8', rot: true },
+  { r: [18, 17.9, 21.5, 31.5], c: '--stair', l: '', thin: true },
+], api => {
+  const { el, T, R } = api;
+  stair(api, 'UP / DN');
+  el('line', { x1: X(21.5), y1: Y(29.5), x2: X(39), y2: Y(29.5), stroke: '#5b8aa0', 'stroke-width': 1.6 });   // glass balustrade
+  R(11.5, 23.6, 17.3, 28.8, { fill: '#9fc0cf', stroke: css('--ink'), 'stroke-width': .6 });
+  R(42.5, 40.6, 48, 43.3, { fill: '#fff', stroke: css('--ink'), 'stroke-width': .6 }); T(X(45.25), Y(42.3), 'tub', { 'font-size': 9, fill: css('--muted') });
+  door(api, 'h', 22.5, 34, 2.5, 1); door(api, 'h', 30, 34, 2.5, 1); opening(api, 'h', 34.5, 34, 4);
+  door(api, 'v', 39, 30.5, 2.5, 1); opening(api, 'h', 42, 30, 4); door(api, 'h', 47, 34, 2.5, 1);
+  door(api, 'v', 18, 31.8, 2.2, -1); door(api, 'v', 13, 31, 2.5, -1); door(api, 'h', 14, 36, 2.5, 1);
+  door(api, 'h', 14, 30, 2.5, -1); windowMark(api, 'h', 5, 30, 6);                                        // onto the sky deck
+  windowMark(api, 'h', 18.6, 15, 20.4); windowMark(api, 'h', 40.5, 15, 9); windowMark(api, 'v', 18, 24, 5.4);
+  windowMark(api, 'v', 51, 18, 9); windowMark(api, 'v', 51, 38, 5);
+  windowMark(api, 'h', 21, 44, 6); windowMark(api, 'h', 30.5, 44, 2); windowMark(api, 'h', 35, 44, 3); windowMark(api, 'h', 42, 44, 7);
+  windowMark(api, 'v', 4, 33, 9); windowMark(api, 'h', 6, 44, 5); windowMark(api, 'h', 14, 44, 2.5);
+  T(X(34.5), Y(13.2), 'RIDGE ↓ (runs north–south)', { 'font-size': 9, fill: css('--muted') });
+  el('line', { x1: X(34.5), y1: Y(14), x2: X(34.5), y2: Y(44.6), stroke: css('--accent'), 'stroke-width': .8, 'stroke-dasharray': '8 4 2 4' });
+}, null);
+</script>
+</body>
+</html>

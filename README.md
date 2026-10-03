@@ -17,6 +17,7 @@ is a tab in the viewer: walk through it in 3D, or flip to its photo-real renders
 | **V4 · Site plan v2 · 4BHK** (`#v4`) | The [`plans/house-plan-v4.png`](plans/house-plan-v4.png) plan built in 3D, inside the setback L of [`plans/site-plan-v2.png`](plans/site-plan-v2.png): S4 main door in a 4′ × 5′ portico recessed into the front with a balcony above (nothing built in the 15′ front open space), floating open-riser stair in the south with winders and 19 steps, garage SE, 1 bedroom down (SW, attached bath) + common bath, master SW + bedrooms 3 and 4 up, kitchen/store/utility in the east wing, pooja in the NE corner of the terrace. No photo-real renders yet |
 | **V5 · Wide portico** (`#v5`) | [`plans/house-plan-v5.png`](plans/house-plan-v5.png): V4 with a 10½′ × 5′ recessed portico and balcony; to fit it the stair moves 5′ north, over the centre of the main block (against Vastu). Living becomes 17′ × 13′ + lobby. No photo-real renders yet |
 | **V6 · Open garage** (`#v6`) | [`plans/house-plan-v6.png`](plans/house-plan-v6.png): V4 without a portico: the garage is an open carport and the S4 main door sits flush on the front wall right beside it, with a side door from the carport into the foyer for a covered entry. Foyer back to 4′ × 11′, gallery upstairs with a front window. Same floating winder stair as V4. No photo-real renders yet |
+| **V7 · Nordic gable** (`#v7`) | [`plans/house-plan-v7.png`](plans/house-plan-v7.png): no Vastu or room-count constraints, just the most beautiful house on the same L. One black-clad Scandinavian gable (38° standing-seam roof, ridge north–south) whose glass end faces the mountains from floor to ridge over a double-height great room with a wood stove; floating oak stair behind a full-height slat screen; snug, kitchen, dining, library downstairs; master + 2 bedrooms vaulted to the roof upstairs. White east wing with boot room, guest suite and sauna, and a bedroom opening onto a hot-tub sky deck under a pergola. No photo-real renders yet |
 
 ## Layout
 
@@ -31,7 +32,7 @@ is a tab in the viewer: walk through it in 3D, or flip to its photo-real renders
 | `render/build_scene.py` | Shared Blender pipeline: materials, site, trees, sky, render settings |
 | `render/fetch_assets.py` | Downloads the free CC0 [Poly Haven](https://polyhaven.com) sky, textures, plants and furniture (~300 MB, not committed) |
 | `tools/export_geometry.mjs` | Exports `design.js` geometry for Blender (needs `npm i -g puppeteer` + Chrome) |
-| `plans/` | Original site plan and floor plan sketches; `site-plan-v2.html` / `.png` is the Vastu setback site plan (construction area + every gap); `house-plan-v4/v5/v6.html` / `.png` are the 2D floor plans of viewer tabs V4–V6 on it |
+| `plans/` | Original site plan and floor plan sketches; `site-plan-v2.html` / `.png` is the Vastu setback site plan (construction area + every gap); `house-plan-v4`…`v7.html` / `.png` are the 2D floor plans of viewer tabs V4–V7 on it |
 
 The viewer also works opened straight from disk (double-click `index.html`).
 
